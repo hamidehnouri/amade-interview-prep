@@ -44,12 +44,31 @@ Respond with ONLY a valid JSON object, no extra text, in this shape:
     cleaned = raw_reply.strip().replace("```json", "").replace("```", "").strip()
     return json.loads(cleaned)
 
+def generate_questions(topics, seniority, num_questions=5):
+    """Take topics + seniority and return a list of interview questions."""
+    system_prompt = f"""You are an experienced technical interviewer.
+Generate exactly {num_questions} interview questions for a {seniority}-level candidate.
+Base them on these topics: {topics}.
+Respond with ONLY a valid JSON array of strings, no extra text, like:
+["question 1", "question 2", "question 3"]"""
+
+    raw_reply = ask_llm(
+        system_prompt=system_prompt,
+        user_prompt="Generate the interview questions now.",
+        temperature=0.7,
+    )
+
+    cleaned = raw_reply.strip().replace("```json", "").replace("```", "").strip()
+    return json.loads(cleaned)
+
 
 if __name__ == "__main__":
     sample_jd = """We are hiring a Junior Network Security Engineer.
     You will monitor firewalls, respond to incidents, and work with SIEM tools.
     Requirements: TCP/IP, Linux, basic Python, and eagerness to learn."""
 
-    result = analyze_job_description(sample_jd)
-    print(result)
-    print("Skills:", result["key_skills"])
+    analysis = analyze_job_description(sample_jd)
+    questions = generate_questions(analysis["interview_topics"], analysis["seniority"])
+
+    for i, q in enumerate(questions, start=1):
+        print(f"{i}. {q}")
