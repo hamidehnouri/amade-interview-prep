@@ -1,9 +1,12 @@
 import streamlit as st
+from ui_helpers import load_css
 from features import analyze_job_description, generate_questions, coach_answer
 from security import check_input
 from prompts import COACH_PROMPTS
 
 st.set_page_config(page_title="Āmāde — Interview Prep", page_icon="🏋️")
+
+load_css("styles.css")
 
 # --- Developer settings (separate from the user experience) ---
 with st.sidebar:

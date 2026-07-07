@@ -1,0 +1,6 @@
+[theme]
+primaryColor = "#4C6EF5"                 # Āmāde blue-500 — buttons, slider, accents
+backgroundColor = "#FBFAF7"              # warm paper background
+secondaryBackgroundColor = "#EEF1FB"     # soft blue tint — sidebar, cards
+textColor = "#232946"                    # deep indigo ink
+font = "sans serif"
