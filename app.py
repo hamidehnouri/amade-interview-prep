@@ -1,9 +1,9 @@
 import streamlit as st
-from features import analyze_job_description, generate_questions
+from features import analyze_job_description, generate_questions, coach_answer
 from security import check_input
 from prompts import COACH_PROMPTS
 
-st.set_page_config(page_title="Āmāde — Interview Prep", page_icon="🎯")
+st.set_page_config(page_title="Āmāde — Interview Prep", page_icon="🏋️")
 
 # --- Developer settings (separate from the user experience) ---
 with st.sidebar:
@@ -34,11 +34,39 @@ if st.button("Analyze & generate questions"):
             st.session_state.analysis = analysis
             st.session_state.questions = questions
 
-# --- Display results (runs on every rerun, using stored data) ---
+# --- Display results ---
 if st.session_state.analysis:
     st.subheader("Key skills")
     st.write(", ".join(st.session_state.analysis["key_skills"]))
 
     st.subheader("Interview questions")
+
+    # make sure we have a place to store feedback per question
+    if "feedback" not in st.session_state:
+        st.session_state.feedback = {}
+
     for i, q in enumerate(st.session_state.questions, start=1):
-        st.write(f"{i}. {q}")
+        st.markdown(f"**{i}. {q}**")
+
+        answer = st.text_area("Your answer", key=f"answer_{i}", height=120)
+
+        if st.button("Get feedback", key=f"btn_{i}"):
+            safe, reason = check_input(answer)
+            if not safe:
+                st.error(reason)
+            else:
+                with st.spinner("Coaching..."):
+                    result = coach_answer(
+                        q, answer,
+                        technique=technique,
+                    )
+                    st.session_state.feedback[i] = result
+
+        # show feedback for this question if we have it
+        if i in st.session_state.feedback:
+            fb = st.session_state.feedback[i]
+            for part in ["situation", "task", "action", "result"]:
+                st.write(f"**{part.capitalize()}: {fb[part]['score']}/10** — {fb[part]['feedback']}")
+            st.info(fb["overall"])
+
+        st.divider()
