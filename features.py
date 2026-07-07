@@ -1,5 +1,6 @@
 import json 
 from llm import ask_llm 
+from prompts import COACH_PROMPTS
 
 def analyze_job_description(job_description):
     system_prompt = """You are an expert technical recruiter.
@@ -36,25 +37,12 @@ Respond with ONLY a valid JSON array of strings, no extra text, like:
     cleaned = raw_reply.strip().replace("```json", "").replace("```", "").strip()
     return json.loads(cleaned)
 
-COACH_PROMPT = """You are a supportive but honest interview coach.
-The user gives a question and their answer.
-Evaluate using STAR (Situation, Task, Action, Result).
-Think through each STAR element step by step before scoring.
-Respond with ONLY a valid JSON object in this shape:
-{
-  "situation": {"feedback": "...", "score": 0},
-  "task": {"feedback": "...", "score": 0},
-  "action": {"feedback": "...", "score": 0},
-  "result": {"feedback": "...", "score": 0},
-  "overall": "one-sentence summary"
-}
-Each score is an integer 0 to 10."""
-
-def coach_answer(question, answer, system_prompt=COACH_PROMPT):
+def coach_answer(question, answer, technique="chain_of_thought"):
+    """Evaluate an answer. `technique` picks which prompt from COACH_PROMPTS."""
+    system_prompt = COACH_PROMPTS[technique]
     user_prompt = f"Question: {question}\n\nMy answer: {answer}"
-    raw_reply = ask_llm(system_prompt=system_prompt,
-                        user_prompt=user_prompt, temperature=0.4)
+
+    raw_reply = ask_llm(system_prompt=system_prompt, user_prompt=user_prompt, temperature=0.4)
     cleaned = raw_reply.strip().replace("```json", "").replace("```", "").strip()
     return json.loads(cleaned)
-
 
