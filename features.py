@@ -58,15 +58,3 @@ def coach_answer(question, answer, system_prompt=COACH_PROMPT):
     return json.loads(cleaned)
 
 
-
-if __name__ == "__main__":
-    question = "Tell me about a time you handled a security incident."
-    answer = """Once our firewall flagged unusual traffic. I checked the logs,
-    saw a brute-force attempt, blocked the IP, and reported it to my manager.
-    The attack stopped and we added rate-limiting afterwards."""
-
-    feedback = coach_answer(question, answer)
-
-    for part in ["situation", "task", "action", "result"]:
-        print(f"{part.upper()}: {feedback[part]['score']}/10 — {feedback[part]['feedback']}")
-    print("OVERALL:", feedback["overall"])
