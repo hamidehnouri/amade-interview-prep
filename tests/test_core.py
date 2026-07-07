@@ -1,4 +1,4 @@
-from security import check_input
+from backend.security import check_input
 
 if __name__ == "__main__":
     tests = [

@@ -1,6 +1,6 @@
 import json 
-from llm import ask_llm 
-from prompts import COACH_PROMPTS
+from backend.llm import ask_llm 
+from backend.prompts import COACH_PROMPTS
 
 def analyze_job_description(job_description):
     system_prompt = """You are an expert technical recruiter.
