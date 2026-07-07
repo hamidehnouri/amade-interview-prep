@@ -83,12 +83,13 @@ def coach_answer(question, answer, system_prompt=COACH_PROMPT):
     return json.loads(cleaned)
 
 if __name__ == "__main__":
-    sample_jd = """We are hiring a Junior Network Security Engineer.
-    You will monitor firewalls, respond to incidents, and work with SIEM tools.
-    Requirements: TCP/IP, Linux, basic Python, and eagerness to learn."""
+    question = "Tell me about a time you handled a security incident."
+    answer = """Once our firewall flagged unusual traffic. I checked the logs,
+    saw a brute-force attempt, blocked the IP, and reported it to my manager.
+    The attack stopped and we added rate-limiting afterwards."""
 
-    analysis = analyze_job_description(sample_jd)
-    questions = generate_questions(analysis["interview_topics"], analysis["seniority"])
+    feedback = coach_answer(question, answer)
 
-    for i, q in enumerate(questions, start=1):
-        print(f"{i}. {q}")
+    for part in ["situation", "task", "action", "result"]:
+        print(f"{part.upper()}: {feedback[part]['score']}/10 — {feedback[part]['feedback']}")
+    print("OVERALL:", feedback["overall"])
