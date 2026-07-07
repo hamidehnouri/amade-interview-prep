@@ -1,7 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
 
 html, body, [class*="css"] { font-family: 'IBM Plex Sans', sans-serif; }
-h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; color: #232946; }
+h1, h2, h3,
+.stApp h1, .stApp h2, .stApp h3,
+[data-testid="stHeading"], [data-testid="stMarkdownContainer"] h1,
+[data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 {
+    font-family: 'Space Grotesk', sans-serif !important;
+    color: #232946 !important;
+}
 
 .stButton button {
     background-color: #4C6EF5; color: white; border: none;
