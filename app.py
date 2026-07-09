@@ -10,7 +10,7 @@ load_css("styles.css")
 
 # ── App state ────────────────────────────────────────────────────────────────
 ss = st.session_state
-ss.setdefault("route", "practice")           # "practice" is the home view
+ss.setdefault("route", st.query_params.get("tab", "practice"))  # survives refresh via URL
 ss.setdefault("technique", list(COACH_PROMPTS.keys())[1])
 ss.setdefault("temperature", 0.4)
 ss.setdefault("analysis", None)
@@ -20,29 +20,37 @@ ss.setdefault("feedback", {})
 
 def go(route: str):
     ss.route = route
+    st.query_params["tab"] = route   # keep the URL in sync so refresh restores it
 
 
 # ── Sidebar — Āmāde shell ─────────────────────────────────────────────────────
-# NAV is list-driven: add ("key", "Label", ":material/icon:") tuples here to
-# grow the sidebar. Each entry becomes a styled nav tab automatically.
+# NAV holds the main nav tabs — add ("key", "Label", ":material/icon:") tuples
+# to grow it. SETTINGS_TAB is pinned below a divider, mirroring the design.
 NAV = [
-    ("settings", "Settings", ":material/settings:"),
-    # ("jd",   "JD analyser",    ":material/target:"),
-    # ("bank", "Question bank",  ":material/library_books:"),
-    # ("mock", "Mock interview", ":material/mic:"),
+    ("jd",   "JD analyser",    ":material/target:"),
+    ("bank", "Question bank",  ":material/library_books:"),
+    ("mock", "Mock interview", ":material/mic:"),
 ]
+SETTINGS_TAB = ("settings", "Settings", ":material/settings:")
+
+
+def nav_button(key, label, icon):
+    st.button(
+        label,
+        key=f"nav_{key}",
+        icon=icon,
+        type="primary" if ss.route == key else "secondary",
+        width="stretch",
+        on_click=go,
+        args=(key,),
+    )
+
 
 with st.sidebar:
     for key, label, icon in NAV:
-        st.button(
-            label,
-            key=f"nav_{key}",
-            icon=icon,
-            type="primary" if ss.route == key else "secondary",
-            width="stretch",
-            on_click=go,
-            args=(key,),
-        )
+        nav_button(key, label, icon)
+    st.markdown('<div class="nav-sep"></div>', unsafe_allow_html=True)
+    nav_button(*SETTINGS_TAB)
 
 
 # ── Pages ─────────────────────────────────────────────────────────────────────

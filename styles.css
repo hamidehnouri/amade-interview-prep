@@ -29,6 +29,15 @@ section[data-testid="stMain"] .stButton button:hover { background-color: #3B5AD9
 }
 [data-testid="stSidebar"] > div { padding-top: 12px; }
 
+/* Tighten vertical spacing between nav tabs */
+[data-testid="stSidebar"] [data-testid="stVerticalBlock"] { gap: 2px !important; }
+
+/* Divider above the Settings tab */
+[data-testid="stSidebar"] .nav-sep {
+    border-top: 1px solid #EFF1F5;
+    margin: 8px 4px 6px;
+}
+
 /* Nav tab -- base (inactive) */
 [data-testid="stSidebar"] .stButton button {
     display: flex !important; align-items: center; gap: 11px;
