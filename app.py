@@ -1,8 +1,9 @@
 import streamlit as st
+
 from frontend.ui_helpers import load_css
+from frontend import settings
 from backend.features import analyze_job_description, generate_questions, coach_answer
 from backend.security import check_input
-from backend.prompts import COACH_PROMPTS
 
 st.set_page_config(page_title="Āmāde — Interview Prep", page_icon="🏋️", layout="wide")
 
@@ -11,11 +12,10 @@ load_css("styles.css")
 # ── App state ────────────────────────────────────────────────────────────────
 ss = st.session_state
 ss.setdefault("route", st.query_params.get("tab", "practice"))  # survives refresh via URL
-ss.setdefault("technique", list(COACH_PROMPTS.keys())[1])
-ss.setdefault("temperature", 0.4)
 ss.setdefault("analysis", None)
 ss.setdefault("questions", None)
 ss.setdefault("feedback", {})
+settings.init_state()  # model / technique / generation defaults live in settings.py
 
 
 def go(route: str):
@@ -53,22 +53,7 @@ with st.sidebar:
     nav_button(*SETTINGS_TAB)
 
 
-# ── Pages ─────────────────────────────────────────────────────────────────────
-def render_settings():
-    st.title("Settings")
-    st.caption(
-        "Tune how the AI interviewer generates questions and scores answers. "
-        "These settings apply to every new session."
-    )
-    keys = list(COACH_PROMPTS.keys())
-    ss.technique = st.selectbox(
-        "Coach prompt technique", keys, index=keys.index(ss.technique)
-    )
-    ss.temperature = st.slider("Temperature", 0.0, 1.0, ss.temperature, 0.1)
-    st.divider()
-    st.button("← Back to practice", on_click=go, args=("practice",))
-
-
+# ── Practice page ─────────────────────────────────────────────────────────────
 def render_practice():
     st.title("Āmāde — Interview Prep")
     st.write("Paste a job description to get tailored interview questions.")
@@ -81,9 +66,10 @@ def render_practice():
             st.error(reason)
         else:
             with st.spinner("Analyzing..."):
-                analysis = analyze_job_description(jd)
+                gen = settings.gen_settings()
+                analysis = analyze_job_description(jd, **gen)
                 questions = generate_questions(
-                    analysis["interview_topics"], analysis["seniority"]
+                    analysis["interview_topics"], analysis["seniority"], **gen
                 )
                 ss.analysis = analysis
                 ss.questions = questions
@@ -104,7 +90,10 @@ def render_practice():
                 else:
                     with st.spinner("Coaching..."):
                         ss.feedback[i] = coach_answer(
-                            q, answer, technique=ss.technique
+                            q, answer,
+                            technique=ss.technique,
+                            self_critique=ss.self_critique,
+                            **settings.gen_settings(),
                         )
 
             if i in ss.feedback:
@@ -121,6 +110,6 @@ def render_practice():
 
 # ── Router ────────────────────────────────────────────────────────────────────
 if ss.route == "settings":
-    render_settings()
+    settings.render(go)
 else:
     render_practice()

@@ -83,3 +83,33 @@ section[data-testid="stMain"] .stButton button:hover { background-color: #3B5AD9
     content: ""; position: absolute; left: 0; top: 7px; bottom: 7px;
     width: 3px; border-radius: 0 2px 2px 0; background: #4C6EF5;
 }
+
+/* ── Settings cards (Model / Generation) ──────────────────────── */
+section[data-testid="stMain"] [data-testid="stVerticalBlockBorderWrapper"] {
+    border: 1px solid #E3E6EC !important;
+    border-left: 3px solid #4C6EF5 !important;
+    border-radius: 14px !important;
+    background: #FFFFFF;
+}
+.rh-kicker { display: flex; align-items: center; gap: 10px; margin: 2px 0 10px; }
+.rh-kick {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase; color: #4C6EF5;
+}
+.rh-dev {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase; color: #4C6EF5;
+    border: 1px solid #C7D2F7; border-radius: 999px; padding: 2px 8px;
+}
+.rh-price {
+    background: #F3F4F8; border-radius: 10px; padding: 12px 14px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 13px;
+}
+.rh-price div { display: flex; justify-content: space-between; color: #6B7280; margin: 2px 0; }
+.rh-price b { color: #232946; font-weight: 600; }
+.rh-cost {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 34px;
+    color: #232946; text-align: right; line-height: 1;
+}
+.rh-sub { color: #9AA1AE; font-size: 12px; }
