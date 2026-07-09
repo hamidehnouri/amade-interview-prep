@@ -9,8 +9,68 @@ h1, h2, h3,
     color: #232946 !important;
 }
 
-.stButton button {
+/* Main-area action buttons (Analyze, Get feedback, etc.) */
+section[data-testid="stMain"] .stButton button {
     background-color: #4C6EF5; color: white; border: none;
     border-radius: 10px; font-weight: 600;
 }
-.stButton button:hover { background-color: #3B5AD9; }
+section[data-testid="stMain"] .stButton button:hover { background-color: #3B5AD9; }
+
+/* --------------------------------------------------------------
+   Amade sidebar shell -- mirrors the web-app design (Shell.jsx)
+   Tokens: paper #FBFAF7 | blue-50 #EEF1FB | blue-500 #4C6EF5
+           blue-700 #2E48B0 | ink #232946 | borders #E3E6EC/#EFF1F5
+           text-secondary #6B7280 | text-muted #9AA1AE
+   -------------------------------------------------------------- */
+[data-testid="stSidebar"] {
+    background: #FBFAF7;
+    border-right: 1px solid #E3E6EC;
+    width: 236px !important;
+}
+[data-testid="stSidebar"] > div { padding-top: 12px; }
+
+/* Nav tab -- base (inactive) */
+[data-testid="stSidebar"] .stButton button {
+    display: flex !important; align-items: center; gap: 11px;
+    justify-content: flex-start !important; text-align: left !important;
+    width: 100%; padding: 9px 12px; margin: 2px 0;
+    border: none !important; border-radius: 8px !important;
+    background: transparent !important;
+    color: #6B7280 !important;
+    font-family: 'Space Grotesk', sans-serif !important;
+    font-size: 15px !important; font-weight: 500 !important;
+    box-shadow: none !important; position: relative;
+    transition: background .15s ease, color .15s ease;
+}
+[data-testid="stSidebar"] .stButton button [data-testid="stIconMaterial"] {
+    color: #9AA1AE; font-size: 18px;
+}
+/* Force the label + every inner wrapper to left-align (Streamlit centers them) */
+[data-testid="stSidebar"] .stButton button > div,
+[data-testid="stSidebar"] .stButton button [data-testid="stMarkdownContainer"] {
+    width: 100% !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+}
+[data-testid="stSidebar"] .stButton button [data-testid="stMarkdownContainer"] p {
+    text-align: left !important; margin: 0 !important;
+}
+
+/* Nav tab -- hover (inactive/secondary) */
+[data-testid="stSidebar"] .stButton button[data-testid="stBaseButton-secondary"]:hover {
+    background: #EFF1F5 !important; color: #232946 !important;
+}
+
+/* Nav tab -- active (primary) */
+[data-testid="stSidebar"] .stButton button[data-testid="stBaseButton-primary"] {
+    background: #EEF1FB !important; color: #2E48B0 !important;
+    font-weight: 600 !important;
+}
+[data-testid="stSidebar"] .stButton button[data-testid="stBaseButton-primary"] [data-testid="stIconMaterial"] {
+    color: #4C6EF5 !important;
+}
+/* 3px blue left bar on the active tab */
+[data-testid="stSidebar"] .stButton button[data-testid="stBaseButton-primary"]::before {
+    content: ""; position: absolute; left: 0; top: 7px; bottom: 7px;
+    width: 3px; border-radius: 0 2px 2px 0; background: #4C6EF5;
+}
