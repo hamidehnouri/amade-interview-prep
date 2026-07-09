@@ -50,10 +50,13 @@ def gen_settings():
     )
 
 
-def _kicker(label):
+def _kicker(label, badge=None):
+    right = f'<span class="rh-badge">{badge}</span>' if badge else ""
     st.markdown(
-        f'<div class="rh-kicker"><span class="rh-kick">{label}</span>'
-        f'<span class="rh-dev">\U0001F512 DEV ONLY</span></div>',
+        '<div class="rh-kicker"><span class="rh-kicker-l">'
+        f'<span class="rh-kick">{label}</span>'
+        '<span class="rh-dev">\U0001F512 Dev only</span></span>'
+        f'{right}</div>',
         unsafe_allow_html=True,
     )
 
@@ -70,7 +73,7 @@ def render(on_back):
 
     # ── Model card ────────────────────────────────────────────────
     with st.container(border=True):
-        _kicker("MODEL")
+        _kicker("Model", badge="Standard")
         left, right = st.columns([3, 2])
         with left:
             model_keys = list(MODELS.keys())
@@ -87,8 +90,8 @@ def render(on_back):
             m = MODELS[ss.model]
             st.markdown(
                 '<div class="rh-price">'
-                f'<div><span>Input</span><b>${m["inp"]:.2f} / 1M</b></div>'
-                f'<div><span>Output</span><b>${m["out"]:.2f} / 1M</b></div>'
+                f'<div><span>Input</span><span>${m["inp"]:.2f} / 1M</span></div>'
+                f'<div><span>Output</span><span>${m["out"]:.2f} / 1M</span></div>'
                 '</div>',
                 unsafe_allow_html=True,
             )
@@ -96,9 +99,9 @@ def render(on_back):
         c_label, c_val = st.columns([3, 1])
         with c_label:
             st.markdown(
-                "**Estimated cost per session**<br>"
-                f"<span class='rh-sub'>~8 questions · {ss.max_tokens:,} "
-                "max output tokens each</span>",
+                "<div class='rh-costlbl'>Estimated cost per session</div>"
+                f"<div class='rh-sub'>~8 questions · {ss.max_tokens:,} "
+                "max output tokens each</div>",
                 unsafe_allow_html=True,
             )
         with c_val:
@@ -109,7 +112,7 @@ def render(on_back):
 
     # ── Generation card ───────────────────────────────────────────
     with st.container(border=True):
-        _kicker("GENERATION")
+        _kicker("Generation")
         gl, gr = st.columns(2)
         with gl:
             st.slider(
