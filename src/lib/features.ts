@@ -9,7 +9,8 @@ export async function analyzeJobDescription(jd: string, g: LlmOpts) {
 
 export async function generateQuestions(topics: string[], seniority: string, g: LlmOpts, n = 5) {
   const raw = await askLlm(generatePrompt(topics, seniority, n), "Generate the interview questions now.", g);
-  return JSON.parse(clean(raw)) as { question: string; category: string; difficulty: string; meta: string }[];
+  const parsed = JSON.parse(clean(raw));
+  return (parsed.questions ?? parsed) as { question: string; category: string; difficulty: string; meta: string }[];
 }
 
 export async function coachAnswer(question: string, answer: string, technique: string, selfCritique: boolean, g: LlmOpts) {

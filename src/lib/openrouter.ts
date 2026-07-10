@@ -17,7 +17,10 @@ export async function askLlm(system: string, user: string, opts: LlmOpts): Promi
   const usesReasoning = opts.reasoningEffort && opts.reasoningEffort !== "off";
   if (usesReasoning) body.reasoning = { effort: opts.reasoningEffort };
   else if (opts.temperature != null) body.temperature = opts.temperature;
-  if (opts.maxTokens) body.max_tokens = opts.maxTokens;
+  // reasoning tokens count toward the cap — ensure room so JSON isn't truncated
+  const cap = usesReasoning ? Math.max(opts.maxTokens ?? 0, 2048) : opts.maxTokens;
+  if (cap) body.max_tokens = cap;
+  body.response_format = { type: "json_object" };
 
   const res = await fetch(API_URL, {
     method: "POST",

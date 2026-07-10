@@ -61,7 +61,7 @@ export function generatePrompt(topics: string[], seniority: string, n = 5) {
   return `You are an experienced technical interviewer.
 Generate exactly ${n} interview questions for a ${seniority}-level candidate.
 Base them on these topics: ${topics.join(", ")}.
-Respond with ONLY a valid JSON array, no extra text, where each item is:
+Respond with ONLY a valid JSON object: {"questions": [ ... ]} where each item is:
 {"question": "...", "category": "Behavioural | Technical | System design | Product sense | Leadership", "difficulty": "Easy | Medium | Hard", "meta": "~N min · M follow-ups"}`;
 }
 
