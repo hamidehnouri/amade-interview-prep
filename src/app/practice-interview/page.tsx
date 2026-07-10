@@ -1,6 +1,6 @@
-import MockInterview from "@/components/MockInterview";
+import PracticeInterview from "@/components/PracticeInterview";
 
 export default async function Page({ searchParams }: { searchParams: Promise<{ q?: string; category?: string }> }) {
   const sp = await searchParams;
-  return <MockInterview question={sp.q ?? ""} category={sp.category ?? ""} />;
+  return <PracticeInterview question={sp.q ?? ""} category={sp.category ?? ""} />;
 }

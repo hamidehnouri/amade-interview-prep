@@ -9,7 +9,7 @@ import { useSettings } from "@/lib/settings";
 
 const STAR = ["situation", "task", "action", "result"] as const;
 
-export default function MockInterview({ question, category }: { question: string; category?: string }) {
+export default function PracticeInterview({ question, category }: { question: string; category?: string }) {
   const { settings } = useSettings();
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);

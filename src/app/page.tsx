@@ -33,7 +33,7 @@ export default function JDAnalyserPage() {
     }
   }
   const practice = (q: Question) =>
-    router.push(`/mock-interview?${new URLSearchParams({ q: q.question, category: q.category })}`);
+    router.push(`/practice-interview?${new URLSearchParams({ q: q.question, category: q.category })}`);
 
   return (
     <div className="mx-auto grid max-w-[1080px] grid-cols-1 gap-6 lg:grid-cols-2">

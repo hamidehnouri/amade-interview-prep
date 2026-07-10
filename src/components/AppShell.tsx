@@ -6,11 +6,11 @@ import NavItem from "@/components/ui/NavItem";
 
 const NAV = [
   { href: "/", label: "JD analyser", icon: Target },
-  { href: "/mock-interview", label: "Mock interview", icon: Mic },
+  { href: "/practice-interview", label: "Practice interview", icon: Mic },
 ];
 const TITLES: Record<string, string> = {
   "/": "JD analyser",
-  "/mock-interview": "Mock interview",
+  "/practice-interview": "Practice interview",
   "/settings": "Settings",
 };
 
