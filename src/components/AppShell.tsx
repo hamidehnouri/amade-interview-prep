@@ -1,12 +1,12 @@
 "use client";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { Target, Mic, Settings } from "lucide-react";
+import { Target, MessageCircle, Settings } from "lucide-react";
 import NavItem from "@/components/ui/NavItem";
 
 const NAV = [
   { href: "/", label: "JD analyser", icon: Target },
-  { href: "/practice-interview", label: "Practice interview", icon: Mic },
+  { href: "/practice-interview", label: "Practice interview", icon: MessageCircle },
 ];
 const TITLES: Record<string, string> = {
   "/": "JD analyser",
