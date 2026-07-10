@@ -1,18 +1,18 @@
 "use client";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { Target, Library, Mic, Settings, Bell } from "lucide-react";
+import { Target, Mic, Library, Settings } from "lucide-react";
 import NavItem from "@/components/ui/NavItem";
 
 const NAV = [
   { href: "/", label: "JD analyser", icon: Target },
-  { href: "/question-bank", label: "Question bank", icon: Library },
   { href: "/mock-interview", label: "Mock interview", icon: Mic },
+  { href: "/question-bank", label: "Question bank", icon: Library },
 ];
 const TITLES: Record<string, string> = {
   "/": "JD analyser",
-  "/question-bank": "Question bank",
   "/mock-interview": "Mock interview",
+  "/question-bank": "Question bank",
   "/settings": "Settings",
 };
 
@@ -44,11 +44,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex items-center justify-between border-b border-line px-7 py-4">
+        <header className="flex items-center border-b border-line px-7 py-4">
           <h1 className="font-display text-[24px] font-bold tracking-tight">{TITLES[pathname] ?? "Āmāde"}</h1>
-          <button className="rounded-lg border border-line p-2 text-muted hover:bg-line-subtle" aria-label="Notifications">
-            <Bell size={18} />
-          </button>
         </header>
         <main className="flex-1 overflow-y-auto p-7">{children}</main>
       </div>

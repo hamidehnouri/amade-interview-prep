@@ -1,27 +1,22 @@
 export type Analysis = { key_skills: string[]; interview_topics: string[]; seniority: string };
+export type Question = { id: number; question: string; category: string; difficulty: "Easy" | "Medium" | "Hard"; meta: string };
 export type StarPart = { feedback: string; score: number };
 export type Feedback = { situation: StarPart; task: StarPart; action: StarPart; result: StarPart; overall: string };
 
 // TODO(Step 6): replace mocks with fetch() to /api/analyze and /api/coach.
-export async function analyze(_jd: string): Promise<{ analysis: Analysis; questions: string[] }> {
+export async function analyze(_jd: string): Promise<{ analysis: Analysis; questions: Question[] }> {
   await new Promise((r) => setTimeout(r, 500));
   return {
     analysis: { key_skills: ["Python", "APIs", "Prompt design"], interview_topics: ["LLMs"], seniority: "mid" },
     questions: [
-      "Tell me about a time you shipped an LLM feature end to end.",
-      "How do you evaluate prompt quality?",
-      "Describe a debugging challenge with an API integration.",
+      { id: 1, question: "Tell me about a time you shipped an LLM feature end to end.", category: "Behavioural", difficulty: "Medium", meta: "~5 min · 3 follow-ups" },
+      { id: 2, question: "How do you evaluate prompt quality?", category: "Technical", difficulty: "Hard", meta: "~8 min · 2 follow-ups" },
+      { id: 3, question: "Describe a debugging challenge with an API integration.", category: "Behavioural", difficulty: "Easy", meta: "~4 min · 1 follow-up" },
     ],
   };
 }
 export async function coachAnswer(_q: string, _a: string): Promise<Feedback> {
   await new Promise((r) => setTimeout(r, 500));
   const p = (score: number, feedback: string) => ({ score, feedback });
-  return {
-    situation: p(6, "Good context; could add scale."),
-    task: p(7, "Clear objective."),
-    action: p(7, "Concrete steps described."),
-    result: p(5, "Add a measurable outcome."),
-    overall: "Solid STAR structure — quantify the result.",
-  };
+  return { situation: p(6, "Good context; could add scale."), task: p(7, "Clear objective."), action: p(7, "Concrete steps described."), result: p(5, "Add a measurable outcome."), overall: "Solid STAR structure — quantify the result." };
 }
