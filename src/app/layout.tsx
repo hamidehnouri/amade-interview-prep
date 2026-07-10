@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Space_Grotesk, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import AppShell from "@/components/AppShell";
-import { SettingsProvider } from "@/lib/settings";
-import { QuestionBankProvider } from "@/lib/bank";
 
 const display = Space_Grotesk({ variable: "--font-space-grotesk", subsets: ["latin"], weight: ["500", "700"] });
 const sans = IBM_Plex_Sans({ variable: "--font-plex-sans", subsets: ["latin"], weight: ["400", "500", "600"] });
@@ -18,11 +16,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`}>
       <body className="h-full">
-        <SettingsProvider>
-          <QuestionBankProvider>
-            <AppShell>{children}</AppShell>
-          </QuestionBankProvider>
-        </SettingsProvider>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

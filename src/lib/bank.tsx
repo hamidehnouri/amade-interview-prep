@@ -1,34 +1,39 @@
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import type { Question } from "./api";
 
 export type BankQuestion = Question & { practiced: boolean };
-type Ctx = { questions: BankQuestion[]; addQuestions: (qs: Question[]) => void; markPracticed: (question: string) => void };
-const BankContext = createContext<Ctx | null>(null);
 const KEY = "amade.bank";
+const EMPTY: BankQuestion[] = [];
+let state: BankQuestion[] = EMPTY;
+let loaded = false;
+const listeners = new Set<() => void>();
 
-export function QuestionBankProvider({ children }: { children: React.ReactNode }) {
-  const [questions, setQuestions] = useState<BankQuestion[]>([]);
-  useEffect(() => {
-    try { const raw = sessionStorage.getItem(KEY); if (raw) setQuestions(JSON.parse(raw)); } catch {}
-  }, []);
-  useEffect(() => {
-    try { sessionStorage.setItem(KEY, JSON.stringify(questions)); } catch {}
-  }, [questions]);
+function ensureLoaded() {
+  if (loaded || typeof window === "undefined") return;
+  loaded = true;
+  try { const raw = sessionStorage.getItem(KEY); if (raw) state = JSON.parse(raw); } catch {}
+}
+function subscribe(cb: () => void) { listeners.add(cb); return () => { listeners.delete(cb); }; }
+function getSnapshot() { ensureLoaded(); return state; }
+function getServerSnapshot() { return EMPTY; }
+function persist() { try { sessionStorage.setItem(KEY, JSON.stringify(state)); } catch {} }
 
-  function addQuestions(qs: Question[]) {
-    setQuestions((prev) => {
-      const seen = new Set(prev.map((q) => q.question));
-      return [...prev, ...qs.filter((q) => !seen.has(q.question)).map((q) => ({ ...q, practiced: false }))];
-    });
-  }
-  function markPracticed(question: string) {
-    setQuestions((prev) => prev.map((q) => (q.question === question ? { ...q, practiced: true } : q)));
-  }
-  return <BankContext.Provider value={{ questions, addQuestions, markPracticed }}>{children}</BankContext.Provider>;
+export function addQuestions(qs: Question[]) {
+  const seen = new Set(state.map((q) => q.question));
+  const add = qs.filter((q) => !seen.has(q.question)).map((q) => ({ ...q, practiced: false }));
+  if (add.length === 0) return;
+  state = [...state, ...add];
+  persist();
+  listeners.forEach((l) => l());
+}
+export function markPracticed(question: string) {
+  if (!state.some((q) => q.question === question && !q.practiced)) return;
+  state = state.map((q) => (q.question === question ? { ...q, practiced: true } : q));
+  persist();
+  listeners.forEach((l) => l());
 }
 export function useBank() {
-  const ctx = useContext(BankContext);
-  if (!ctx) throw new Error("useBank must be used within QuestionBankProvider");
-  return ctx;
+  const questions = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  return { questions, addQuestions, markPracticed };
 }

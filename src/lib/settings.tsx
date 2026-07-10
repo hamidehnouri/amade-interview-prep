@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 export type GenerationSettings = {
   model: string;
@@ -14,23 +14,26 @@ export const DEFAULT_SETTINGS: GenerationSettings = {
   model: "openai/gpt-5-mini", technique: "chain_of_thought", temperature: 0.4,
   maxTokens: 1024, reasoning: "medium", stream: true, selfCritique: true,
 };
-type Ctx = { settings: GenerationSettings; update: (patch: Partial<GenerationSettings>) => void };
-const SettingsContext = createContext<Ctx | null>(null);
 const KEY = "amade.settings";
+let state: GenerationSettings = DEFAULT_SETTINGS;
+let loaded = false;
+const listeners = new Set<() => void>();
 
-export function SettingsProvider({ children }: { children: React.ReactNode }) {
-  const [settings, setSettings] = useState<GenerationSettings>(DEFAULT_SETTINGS);
-  useEffect(() => {
-    try { const raw = sessionStorage.getItem(KEY); if (raw) setSettings({ ...DEFAULT_SETTINGS, ...JSON.parse(raw) }); } catch {}
-  }, []);
-  useEffect(() => {
-    try { sessionStorage.setItem(KEY, JSON.stringify(settings)); } catch {}
-  }, [settings]);
-  const update = (patch: Partial<GenerationSettings>) => setSettings((s) => ({ ...s, ...patch }));
-  return <SettingsContext.Provider value={{ settings, update }}>{children}</SettingsContext.Provider>;
+function ensureLoaded() {
+  if (loaded || typeof window === "undefined") return;
+  loaded = true;
+  try { const raw = sessionStorage.getItem(KEY); if (raw) state = { ...DEFAULT_SETTINGS, ...JSON.parse(raw) }; } catch {}
+}
+function subscribe(cb: () => void) { listeners.add(cb); return () => { listeners.delete(cb); }; }
+function getSnapshot() { ensureLoaded(); return state; }
+function getServerSnapshot() { return DEFAULT_SETTINGS; }
+
+export function updateSettings(patch: Partial<GenerationSettings>) {
+  state = { ...state, ...patch };
+  try { sessionStorage.setItem(KEY, JSON.stringify(state)); } catch {}
+  listeners.forEach((l) => l());
 }
 export function useSettings() {
-  const ctx = useContext(SettingsContext);
-  if (!ctx) throw new Error("useSettings must be used within SettingsProvider");
-  return ctx;
+  const settings = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  return { settings, update: updateSettings };
 }
