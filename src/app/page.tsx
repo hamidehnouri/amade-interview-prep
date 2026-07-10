@@ -8,12 +8,10 @@ import Textarea from "@/components/ui/Textarea";
 import Eyebrow from "@/components/ui/Eyebrow";
 import QuestionCard from "@/components/ui/QuestionCard";
 import { analyze, type Analysis, type Question } from "@/lib/api";
-import { useBank } from "@/lib/bank";
 import { useSettings } from "@/lib/settings";
 
 export default function JDAnalyserPage() {
   const router = useRouter();
-  const { addQuestions } = useBank();
   const { settings } = useSettings();
   const [jd, setJd] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,7 +26,6 @@ export default function JDAnalyserPage() {
       const res = await analyze(jd, settings);
       setAnalysis(res.analysis);
       setQuestions(res.questions);
-      addQuestions(res.questions);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {

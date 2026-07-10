@@ -5,13 +5,11 @@ import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import Textarea from "@/components/ui/Textarea";
 import { coachAnswer, type Feedback } from "@/lib/api";
-import { useBank } from "@/lib/bank";
 import { useSettings } from "@/lib/settings";
 
 const STAR = ["situation", "task", "action", "result"] as const;
 
 export default function MockInterview({ question, category }: { question: string; category?: string }) {
-  const { markPracticed } = useBank();
   const { settings } = useSettings();
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,8 +19,7 @@ export default function MockInterview({ question, category }: { question: string
   if (!question) {
     return (
       <p className="text-secondary">
-        No question selected — go to the <Link href="/" className="text-accent underline">JD analyser</Link> or{" "}
-        <Link href="/question-bank" className="text-accent underline">Question bank</Link> and pick one.
+        No question selected — go to the <Link href="/" className="text-accent underline">JD analyser</Link> and pick one to practice.
       </p>
     );
   }
@@ -32,7 +29,6 @@ export default function MockInterview({ question, category }: { question: string
     setLoading(true);
     try {
       setFeedback(await coachAnswer(question, answer, settings, settings.technique, settings.selfCritique));
-      markPracticed(question);
     } catch (e) {
       setError(String(e));
     } finally {
@@ -53,7 +49,7 @@ export default function MockInterview({ question, category }: { question: string
         <Textarea label="Your answer" value={answer} onChange={setAnswer} rows={8} placeholder="Type your answer here…" />
         <div className="mt-4 flex gap-3">
           <Button onClick={submit} loading={loading} disabled={!answer.trim()}>Submit &amp; get feedback</Button>
-          <Link href="/question-bank" className="inline-flex items-center rounded-[10px] border border-line px-5 py-2.5 font-display text-[14px] font-semibold text-secondary hover:bg-line-subtle">Question bank</Link>
+          <Link href="/" className="inline-flex items-center rounded-[10px] border border-line px-5 py-2.5 font-display text-[14px] font-semibold text-secondary hover:bg-line-subtle">Back to questions</Link>
         </div>
       </Card>
       {error && <div className="rounded-[8px] border border-red-200 bg-red-50 p-3 text-[13px] text-red-700">{error}</div>}
