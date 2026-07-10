@@ -1,7 +1,7 @@
 "use client";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Target, Library, Mic, Settings, Bell } from "lucide-react";
+import NavItem from "@/components/ui/NavItem";
 
 const NAV = [
   { href: "/", label: "JD analyser", icon: Target },
@@ -14,28 +14,6 @@ const TITLES: Record<string, string> = {
   "/mock-interview": "Mock interview",
   "/settings": "Settings",
 };
-
-function NavItem({ href, label, icon: Icon, active }: {
-  href: string;
-  label: string;
-  icon: React.ComponentType<{ size?: number; className?: string }>;
-  active: boolean;
-}) {
-  return (
-    <Link
-      href={href}
-      className={`relative flex items-center gap-3 rounded-lg px-3 py-2 font-display text-[15px] transition-colors ${
-        active
-          ? "bg-blue-50 text-blue-700 font-semibold"
-          : "font-medium text-secondary hover:bg-line-subtle hover:text-ink"
-      }`}
-    >
-      {active && <span className="absolute left-0 top-[7px] bottom-[7px] w-[3px] rounded-r bg-accent" />}
-      <Icon size={18} className={active ? "text-accent" : "text-muted"} />
-      {label}
-    </Link>
-  );
-}
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -51,11 +29,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </div>
         <nav className="mt-2 flex flex-col gap-0.5">
           {NAV.map((n) => (
-            <NavItem key={n.href} {...n} active={pathname === n.href} />
+            <NavItem key={n.href} {...n} />
           ))}
         </nav>
         <div className="my-2 border-t border-line-subtle" />
-        <NavItem href="/settings" label="Settings" icon={Settings} active={pathname === "/settings"} />
+        <NavItem href="/settings" label="Settings" icon={Settings} />
         <div className="flex-1" />
         <div className="flex items-center gap-2.5 border-t border-line-subtle px-2 py-2.5">
           <span className="flex h-[34px] w-[34px] items-center justify-center rounded-full bg-blue-100 font-display text-[13px] font-semibold text-blue-700">
