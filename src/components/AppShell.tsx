@@ -1,5 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 import { Target, Library, Mic, Settings, Bell } from "lucide-react";
 import NavItem from "@/components/ui/NavItem";
 
@@ -21,10 +22,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     <div className="flex h-full">
       <aside className="flex w-[236px] flex-shrink-0 flex-col border-r border-line bg-paper p-3 pt-4">
         <div className="flex items-center gap-2 px-2 pb-2">
-          <svg viewBox="0 0 48 48" className="h-[22px] w-[22px]" role="img" aria-label="Āmāde">
-            <rect x="14" y="7" width="20" height="5" rx="2.5" fill="#FF7A5C" />
-            <path d="M10 40 L24 20 L38 40" fill="none" stroke="#4C6EF5" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          <Image src="/amade-logo.svg" alt="Āmāde" width={22} height={22} priority />
           <span className="font-display text-[20px] font-bold tracking-tight">Āmāde</span>
         </div>
         <nav className="mt-2 flex flex-col gap-0.5">
