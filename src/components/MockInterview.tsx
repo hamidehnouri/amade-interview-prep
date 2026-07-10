@@ -6,11 +6,13 @@ import Button from "@/components/ui/Button";
 import Textarea from "@/components/ui/Textarea";
 import { coachAnswer, type Feedback } from "@/lib/api";
 import { useBank } from "@/lib/bank";
+import { useSettings } from "@/lib/settings";
 
 const STAR = ["situation", "task", "action", "result"] as const;
 
 export default function MockInterview({ question, category }: { question: string; category?: string }) {
   const { markPracticed } = useBank();
+  const { settings } = useSettings();
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
@@ -29,7 +31,7 @@ export default function MockInterview({ question, category }: { question: string
     setError("");
     setLoading(true);
     try {
-      setFeedback(await coachAnswer(question, answer));
+      setFeedback(await coachAnswer(question, answer, settings, settings.technique, settings.selfCritique));
       markPracticed(question);
     } catch (e) {
       setError(String(e));

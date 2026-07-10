@@ -7,10 +7,12 @@ import Textarea from "@/components/ui/Textarea";
 import QuestionCard from "@/components/ui/QuestionCard";
 import { analyze, type Analysis, type Question } from "@/lib/api";
 import { useBank } from "@/lib/bank";
+import { useSettings } from "@/lib/settings";
 
 export default function JDAnalyserPage() {
   const router = useRouter();
   const { addQuestions } = useBank();
+  const { settings } = useSettings();
   const [jd, setJd] = useState("");
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
@@ -21,7 +23,7 @@ export default function JDAnalyserPage() {
     setError("");
     setLoading(true);
     try {
-      const res = await analyze(jd);
+      const res = await analyze(jd, settings);
       setAnalysis(res.analysis);
       setQuestions(res.questions);
       addQuestions(res.questions);
