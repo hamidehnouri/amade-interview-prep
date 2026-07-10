@@ -18,7 +18,7 @@ export async function askLlm(system: string, user: string, opts: LlmOpts): Promi
   if (usesReasoning) body.reasoning = { effort: opts.reasoningEffort };
   else if (opts.temperature != null) body.temperature = opts.temperature;
   // reasoning tokens count toward the cap — ensure room so JSON isn't truncated
-  const cap = usesReasoning ? Math.max(opts.maxTokens ?? 0, 2048) : opts.maxTokens;
+  const cap = usesReasoning ? Math.max(opts.maxTokens ?? 0, 2048) : Math.max(opts.maxTokens ?? 0, 512);
   if (cap) body.max_tokens = cap;
   body.response_format = { type: "json_object" };
 
@@ -27,7 +27,16 @@ export async function askLlm(system: string, user: string, opts: LlmOpts): Promi
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
+  if (!res.ok) {
+    let detail = "";
+    try { detail = JSON.stringify((await res.json()).error ?? {}); } catch {}
+    throw new Error(`OpenRouter request failed (HTTP ${res.status})${detail && detail !== "{}" ? ": " + detail : ""}`);
+  }
   const data = await res.json();
-  if (!data.choices) throw new Error(`OpenRouter error: ${JSON.stringify(data.error ?? data)}`);
-  return data.choices[0].message.content as string;
+  if (data.error) throw new Error(`OpenRouter error: ${JSON.stringify(data.error)}`);
+  const choice = data.choices?.[0];
+  if (choice?.finish_reason === "length") throw new Error("The model's reply was cut off — increase Max output tokens in Settings.");
+  const content = choice?.message?.content;
+  if (typeof content !== "string" || !content.trim()) throw new Error("The model returned an empty response — try again, lower reasoning, or raise Max output tokens.");
+  return content;
 }
