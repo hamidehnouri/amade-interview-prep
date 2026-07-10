@@ -33,7 +33,7 @@ export default function SettingsPage() {
         Tune how the AI interviewer generates questions and scores answers. These settings apply to every new session.
       </p>
 
-      <Card>
+      <Card rail>
         <Kicker label="Model" badge="Standard" />
         <div className="grid grid-cols-[1fr_auto] gap-6">
           <div className="flex flex-col gap-4">
@@ -55,7 +55,7 @@ export default function SettingsPage() {
         </div>
       </Card>
 
-      <Card>
+      <Card rail>
         <Kicker label="Generation" />
         <div className="grid grid-cols-2 gap-x-8 gap-y-5">
           <Slider label="Temperature" value={settings.temperature} min={0} max={1} step={0.1} format={(v) => v.toFixed(1)} disabled hint="Ignored when reasoning is on." />
