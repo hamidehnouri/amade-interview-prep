@@ -18,15 +18,14 @@ const TECHNIQUES = [
   { value: "persona", label: "Persona" },
   { value: "rubric", label: "Rubric" },
 ];
-const REASONING = ["off", "minimal", "low", "medium", "high"] as const;
+const REASONING = ["minimal", "low", "medium", "high"] as const;
 const cap = (s: string) => s[0].toUpperCase() + s.slice(1);
 
 export default function SettingsPage() {
   const { settings, update } = useSettings();
   const m = MODELS.find((x) => x.value === settings.model)!;
   const cost = ((1200 * m.inp + settings.maxTokens * m.out) / 1e6) * 8;
-  const reasoningIdx = REASONING.indexOf(settings.reasoning);
-  const reasoningOn = settings.reasoning !== "off";
+  const reasoningIdx = Math.max(0, REASONING.indexOf(settings.reasoning));
 
   return (
     <div className="mx-auto flex max-w-[920px] flex-col gap-6">
@@ -59,8 +58,8 @@ export default function SettingsPage() {
       <Card>
         <Kicker label="Generation" />
         <div className="grid grid-cols-2 gap-x-8 gap-y-5">
-          <Slider label="Temperature" value={settings.temperature} min={0} max={1} step={0.1} format={(v) => v.toFixed(1)} disabled={reasoningOn} onChange={(v) => update({ temperature: v })} hint={reasoningOn ? "Ignored when reasoning is on." : "Sampling randomness."} />
-          <Slider label="Reasoning effort" value={reasoningIdx} min={0} max={4} step={1} onChange={(i) => update({ reasoning: REASONING[i] })} format={(v) => cap(REASONING[v])} ticks={["Off", "Minimal", "Low", "Medium", "High"]} hint="Higher = more step-by-step thinking, slower & pricier." />
+          <Slider label="Temperature" value={settings.temperature} min={0} max={1} step={0.1} format={(v) => v.toFixed(1)} disabled hint="Ignored when reasoning is on." />
+          <Slider label="Reasoning effort" value={reasoningIdx} min={0} max={3} step={1} onChange={(i) => update({ reasoning: REASONING[i] })} format={(v) => cap(REASONING[v])} ticks={["Minimal", "Low", "Medium", "High"]} hint="Higher = more step-by-step thinking, slower & pricier." />
           <Slider label="Max output tokens" value={settings.maxTokens} min={256} max={4096} step={128} onChange={(v) => update({ maxTokens: v })} format={(v) => v.toLocaleString()} hint="Longer = more detailed feedback." />
           <div className="flex flex-col gap-4">
             <Toggle checked={settings.stream} onChange={(v) => update({ stream: v })} label="Stream responses" hint="Fetch the reply as a stream." />

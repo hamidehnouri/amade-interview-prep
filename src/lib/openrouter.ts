@@ -14,11 +14,10 @@ export async function askLlm(system: string, user: string, opts: LlmOpts): Promi
     ],
   };
   // Reasoning models ignore temperature; "off" (or unset) means use temperature instead.
-  const usesReasoning = opts.reasoningEffort && opts.reasoningEffort !== "off";
-  if (usesReasoning) body.reasoning = { effort: opts.reasoningEffort };
+  if (opts.reasoningEffort) body.reasoning = { effort: opts.reasoningEffort };
   else if (opts.temperature != null) body.temperature = opts.temperature;
-  // reasoning tokens count toward the cap — ensure room so JSON isn't truncated
-  const cap = usesReasoning ? Math.max(opts.maxTokens ?? 0, 2048) : Math.max(opts.maxTokens ?? 0, 512);
+  // GPT-5 always reasons (even without an explicit effort), so always leave headroom.
+  const cap = Math.max(opts.maxTokens ?? 0, 2048);
   if (cap) body.max_tokens = cap;
   body.response_format = { type: "json_object" };
 

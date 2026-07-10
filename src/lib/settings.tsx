@@ -6,7 +6,7 @@ export type GenerationSettings = {
   technique: string;
   temperature: number;
   maxTokens: number;
-  reasoning: "off" | "minimal" | "low" | "medium" | "high";
+  reasoning: "minimal" | "low" | "medium" | "high";
   stream: boolean;
   selfCritique: boolean;
 };
