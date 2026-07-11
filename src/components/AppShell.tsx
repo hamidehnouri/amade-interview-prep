@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { Target, MessageCircle, Settings } from "lucide-react";
@@ -28,8 +29,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             <NavItem key={n.href} {...n} />
           ))}
         </nav>
-        <div className="my-2 border-t border-line-subtle" />
-        <NavItem href="/settings" label="Settings" icon={Settings} />
         <div className="flex-1" />
         <div className="flex items-center gap-2.5 border-t border-line-subtle px-2 py-2.5">
           <span className="flex h-[34px] w-[34px] items-center justify-center rounded-full bg-blue-100 font-display text-[13px] font-semibold text-blue-700">
@@ -42,8 +41,17 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex items-center border-b border-line px-7 py-4">
+        <header className="flex items-center justify-between border-b border-line px-7 py-4">
           <h1 className="font-display text-[24px] font-bold tracking-tight">{TITLES[pathname] ?? "Āmāde"}</h1>
+          <Link
+            href="/settings"
+            aria-label="Settings"
+            className={`rounded-lg border p-2 transition-colors ${
+              pathname === "/settings" ? "border-blue-200 bg-blue-50 text-accent" : "border-line text-muted hover:bg-line-subtle"
+            }`}
+          >
+            <Settings size={18} />
+          </Link>
         </header>
         <main className="flex-1 overflow-y-auto p-7">{children}</main>
       </div>
