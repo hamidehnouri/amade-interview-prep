@@ -1,17 +1,28 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Lock, X } from "lucide-react";
+import { ArrowLeft, Lock, X, Pencil, Check } from "lucide-react";
 import Card from "@/components/ui/Card";
 import Eyebrow from "@/components/ui/Eyebrow";
 import Select from "@/components/ui/Select";
 import Slider from "@/components/ui/Slider";
 import Toggle from "@/components/ui/Toggle";
 import Button from "@/components/ui/Button";
+import RadioGroup from "@/components/ui/RadioGroup";
+import Textarea from "@/components/ui/Textarea";
+import { COACH_PROMPTS } from "@/lib/prompts";
 import { useSettings, DEFAULT_SETTINGS, type GenerationSettings } from "@/lib/settings";
 import { MODELS } from "@/lib/models";
 import { useDevUnlocked, tryUnlock } from "@/lib/devAccess";
 
+const TECHNIQUES = [
+  { value: "zero_shot", label: "Zero-shot", description: "Ask directly. Fastest, lowest token use." },
+  { value: "few_shot", label: "Few-shot", description: "Prime with 2–3 exemplar scored answers first." },
+  { value: "chain_of_thought", label: "Chain-of-thought", description: "Reason step-by-step before scoring. Best accuracy.", badge: "Recommended" },
+  { value: "persona", label: "Persona", description: "Adopt a senior hiring-manager persona." },
+  { value: "rubric", label: "Rubric", description: "Score against an explicit anchored rubric." },
+];
+const TECH_LABEL: Record<string, string> = Object.fromEntries(TECHNIQUES.map((t) => [t.value, t.label]));
 const REASONING = ["minimal", "low", "medium", "high"] as const;
 const cap = (s: string) => s[0].toUpperCase() + s.slice(1);
 
@@ -27,6 +38,7 @@ export default function SettingsPage() {
   const [pw, setPw] = useState("");
   const [pwErr, setPwErr] = useState("");
   const [saved, setSaved] = useState(false);
+  const [editingPrompt, setEditingPrompt] = useState(false);
 
   const dev = mode === "developer";
   const m = MODELS.find((x) => x.value === draft.model)!;
@@ -65,7 +77,7 @@ export default function SettingsPage() {
       </div>
 
       <Card rail={dev}>
-        <Eyebrow badge={dev ? "Standard" : undefined}>Model</Eyebrow>
+        <Eyebrow>Model</Eyebrow>
         <div className="grid grid-cols-[1fr_auto] gap-6">
           <Select label="Interview engine" value={draft.model} options={MODELS.map(({ value, label }) => ({ value, label }))} onChange={(v) => set({ model: v })} />
           <div className="min-w-[190px] rounded-[8px] bg-line-subtle p-3 font-mono text-[12px] text-secondary">
@@ -102,6 +114,45 @@ export default function SettingsPage() {
           )}
         </div>
       </Card>
+
+      {dev && (
+        <Card rail>
+          <Eyebrow>Prompting technique</Eyebrow>
+          <RadioGroup
+            value={draft.technique}
+            columns={2}
+            options={TECHNIQUES}
+            onChange={(v) => { set({ technique: v, customPrompt: null }); setEditingPrompt(false); }}
+          />
+          <div className="mt-5">
+            <div className="flex items-center justify-between">
+              <span className="font-display text-[14px] font-semibold text-ink">System prompt</span>
+              <div className="flex items-center gap-1">
+                {draft.customPrompt != null && (
+                  <button type="button" onClick={() => { set({ customPrompt: null }); setEditingPrompt(false); }} className="mr-1 text-[12px] font-medium text-accent hover:underline">
+                    Reset to template
+                  </button>
+                )}
+                {editingPrompt ? (
+                  <button type="button" title="Save prompt" onClick={() => setEditingPrompt(false)} className="rounded-md p-1.5 text-accent transition-colors hover:bg-blue-50">
+                    <Check size={15} />
+                  </button>
+                ) : (
+                  <button type="button" title="Edit prompt" onClick={() => setEditingPrompt(true)} className="rounded-md p-1.5 text-muted transition-colors hover:bg-line-subtle hover:text-ink">
+                    <Pencil size={15} />
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className="mt-1.5">
+              <Textarea value={draft.customPrompt ?? COACH_PROMPTS[draft.technique]} onChange={(v) => set({ customPrompt: v })} rows={7} readOnly={!editingPrompt} />
+            </div>
+            <p className="mt-1 text-[12px] text-muted">
+              {editingPrompt ? "Editing — click the check to lock it in." : `Showing the ${TECH_LABEL[draft.technique]} template. Click the pencil to edit.`}
+            </p>
+          </div>
+        </Card>
+      )}
 
       <div className="flex justify-end gap-3">
         <button type="button" onClick={() => setDraft(DEFAULT_SETTINGS)} className="rounded-[10px] border border-line px-5 py-2.5 font-display text-[14px] font-semibold text-secondary transition-colors hover:bg-line-subtle">

@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     reasoningEffort: isReasoningModel(settings.model) ? settings.reasoning : null,
   };
   try {
-    const feedback = await coachAnswer(question, answer, technique, selfCritique, g);
+    const feedback = await coachAnswer(question, answer, technique, selfCritique, g, settings.customPrompt);
     return NextResponse.json({ ok: true, feedback });
   } catch (e) {
     return NextResponse.json({ ok: false, error: e instanceof Error ? e.message : String(e) });

@@ -7,6 +7,7 @@ export const SettingsSchema = z.object({
   maxTokens: z.number().int().positive().default(1024),
   reasoning: z.enum(["minimal", "low", "medium", "high"]).catch("medium"),
   selfCritique: z.boolean().default(false),
+  customPrompt: z.string().nullable().catch(null),
 });
 
 // Incoming request bodies

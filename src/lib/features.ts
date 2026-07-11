@@ -22,8 +22,8 @@ export async function generateQuestions(topics: string[], seniority: string, g: 
   return r.data.questions;
 }
 
-export async function coachAnswer(question: string, answer: string, technique: string, selfCritique: boolean, g: LlmOpts) {
-  const system = COACH_PROMPTS[technique] ?? COACH_PROMPTS.chain_of_thought;
+export async function coachAnswer(question: string, answer: string, technique: string, selfCritique: boolean, g: LlmOpts, systemPromptOverride: string | null = null) {
+  const system = systemPromptOverride && systemPromptOverride.trim() ? systemPromptOverride : (COACH_PROMPTS[technique] ?? COACH_PROMPTS.chain_of_thought);
   const first = FeedbackSchema.safeParse(toJson(await askLlm(system, `Question: ${question}\n\nMy answer: ${answer}`, g), "the feedback"));
   if (!first.success) throw new Error("The feedback came back incomplete — try again or raise Max output tokens.");
   let result = first.data;
