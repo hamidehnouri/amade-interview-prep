@@ -7,9 +7,9 @@ export default function AnalyseStep({ jd, onChange }: { jd: string; onChange: (v
   return (
     <>
       <StepHeader n={1} title="Job description analyser" subtitle="Paste a job description — we extract the role's focus areas and generate a matching question set." />
-      <Card>
+      <Card className="flex flex-1 flex-col">
         <Eyebrow>Paste a job description</Eyebrow>
-        <Textarea value={jd} onChange={onChange} rows={12} placeholder="Paste the role's job description…" />
+        <Textarea value={jd} onChange={onChange} grow placeholder="Paste the role's job description…" />
       </Card>
     </>
   );

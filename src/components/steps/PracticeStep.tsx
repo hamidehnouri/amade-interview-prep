@@ -17,7 +17,7 @@ export default function PracticeStep({ question, index, total, answer, onChange 
           <div className="h-1 rounded bg-accent transition-all" style={{ width: `${pct}%` }} />
         </div>
       </div>
-      <Card>
+      <Card className="flex flex-1 flex-col">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-white"><Bot size={18} /></div>
           <div className="flex items-center gap-2">
@@ -26,7 +26,7 @@ export default function PracticeStep({ question, index, total, answer, onChange 
           </div>
         </div>
         <div className="mt-3 font-display text-[20px] font-medium leading-snug text-ink">{question.question}</div>
-        <div className="mt-4"><Textarea value={answer} onChange={onChange} rows={9} placeholder="Type your answer here…" /></div>
+        <div className="mt-4 flex flex-1 flex-col"><Textarea value={answer} onChange={onChange} grow placeholder="Type your answer here…" /></div>
       </Card>
     </>
   );
