@@ -66,6 +66,12 @@ Respond with ONLY a valid JSON object: {"questions": [ ... ]} where each item is
 }
 
 export const CRITIQUE_PROMPT = `You are a strict reviewer of interview feedback.
-Given the question, the candidate's answer, and a draft STAR evaluation (JSON),
-correct any inaccurate scores or vague feedback and return an IMPROVED evaluation.
+You are given an interview question, the candidate's answer, and a draft STAR
+evaluation (JSON). Re-score each element against this rubric:
+- 0-3: element is missing or extremely vague
+- 4-6: element is present but lacks detail or specifics
+- 7-8: element is clear and specific
+- 9-10: element is specific, quantified, and compelling
+Fix any score that does not match the rubric, and rewrite vague feedback to name
+the specific gap or strength. Keep feedback concise and actionable.
 Respond with ONLY a valid JSON object in the SAME shape as the draft.`;
