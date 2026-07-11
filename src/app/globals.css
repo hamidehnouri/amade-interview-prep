@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+:root {
+  --paper: #FBFAF7;      --ink: #232946;
+  --blue-50: #EEF1FB;    --blue-100: #E0E6FE;  --blue-200: #C2CDFC;
+  --blue-500: #4C6EF5;   --blue-700: #2E48B0;  --coral: #FF7A5C;
+  --neutral-100: #EFF1F5; --neutral-200: #E3E6EC; --neutral-300: #C8CDD6;
+  --neutral-400: #9AA1AE; --neutral-500: #6B7280;
+}
+
+@theme inline {
+  --color-paper: var(--paper);        --color-ink: var(--ink);
+  --color-blue-50: var(--blue-50);    --color-blue-100: var(--blue-100);
+  --color-blue-200: var(--blue-200);  --color-blue-500: var(--blue-500);
+  --color-blue-700: var(--blue-700);  --color-accent: var(--blue-500);
+  --color-coral: var(--coral);
+  --color-line: var(--neutral-200);   --color-line-subtle: var(--neutral-100);
+  --color-muted: var(--neutral-400);  --color-secondary: var(--neutral-500);
+  --font-display: var(--font-space-grotesk);
+  --font-sans: var(--font-plex-sans);
+  --font-mono: var(--font-plex-mono);
+  --radius-card: 8px;
+}
+
+body { background: var(--paper); color: var(--ink); font-family: var(--font-sans); }
+
+/* Slider thumb — Āmāde range control */
+.amade-range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; height: 14px; width: 14px; border-radius: 50%; background: #fff; border: 0.5px solid rgba(0,0,0,.12); box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+.amade-range::-moz-range-thumb { height: 14px; width: 14px; border: none; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
