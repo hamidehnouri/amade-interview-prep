@@ -6,7 +6,6 @@ export const SettingsSchema = z.object({
   temperature: z.number().min(0).max(2).default(0.4),
   maxTokens: z.number().int().positive().default(1024),
   reasoning: z.enum(["minimal", "low", "medium", "high"]).catch("medium"),
-  stream: z.boolean().default(false),
   selfCritique: z.boolean().default(false),
 });
 

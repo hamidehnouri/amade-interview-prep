@@ -13,10 +13,15 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <Image src="/amade-logo.svg" alt="Āmāde" width={22} height={22} priority />
           <span className="font-display text-[20px] font-bold tracking-tight">Āmāde</span>
         </Link>
-        <Link href="/settings" aria-label="Settings"
-          className={`rounded-lg p-2 transition-colors ${pathname === "/settings" ? "text-accent" : "text-muted hover:text-ink"}`}>
-          <Settings size={20} />
-        </Link>
+        <div className="group relative">
+          <Link href="/settings" aria-label="Advanced prompt settings"
+            className={`flex rounded-lg p-2 transition-colors ${pathname === "/settings" ? "bg-blue-50 text-accent" : "text-muted hover:bg-line-subtle hover:text-ink"}`}>
+            <Settings size={20} />
+          </Link>
+          <span className="pointer-events-none absolute right-0 top-full z-10 mt-1 whitespace-nowrap rounded-md bg-ink px-2 py-1 text-[11px] font-medium text-white opacity-0 transition-opacity group-hover:opacity-100">
+            Advanced prompt settings
+          </span>
+        </div>
       </header>
       <main className="flex-1 overflow-y-auto p-7">{children}</main>
     </div>

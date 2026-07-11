@@ -74,7 +74,6 @@ export default function SettingsPage() {
           <Slider label="Reasoning effort" value={reasoningIdx} min={0} max={3} step={1} onChange={(i) => set({ reasoning: REASONING[i] })} format={(v) => cap(REASONING[v])} ticks={["Minimal", "Low", "Medium", "High"]} hint="Higher = more step-by-step thinking, slower & pricier." />
           <Slider label="Max output tokens" value={draft.maxTokens} min={256} max={4096} step={128} onChange={(v) => set({ maxTokens: v })} format={(v) => v.toLocaleString()} hint="Longer = more detailed feedback." />
           <div className="flex flex-col gap-4">
-            <Toggle checked={draft.stream} onChange={(v) => set({ stream: v })} label="Stream responses" hint="Fetch the reply as a stream." />
             <Toggle checked={draft.selfCritique} onChange={(v) => set({ selfCritique: v })} label="Self-critique pass" hint="Model reviews its own scoring before returning." />
           </div>
         </div>
