@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
-import { Sparkles, ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
 import Button from "@/components/ui/Button";
+import Stepper from "@/components/ui/Stepper";
 import AnalyseStep from "@/components/steps/AnalyseStep";
 import QuestionsStep from "@/components/steps/QuestionsStep";
 import PracticeStep from "@/components/steps/PracticeStep";
@@ -52,29 +53,7 @@ export default function Home() {
 
   return (
     <div className="mx-auto flex max-w-[860px] flex-col gap-6">
-      {/* Stepper — click a passed step to go back */}
-      <div className="flex items-center gap-2">
-        {STEPS.map((s, i) => {
-          const reached = i <= stepIndex;
-          const done = i < stepIndex;
-          return (
-            <div key={s.key} className="flex flex-1 items-center gap-2 last:flex-none">
-              <button
-                type="button"
-                disabled={!reached}
-                onClick={() => reached && setStep(s.key)}
-                className="flex items-center gap-2 disabled:cursor-default"
-              >
-                <span className={`flex h-6 w-6 items-center justify-center rounded-full text-[12px] font-semibold ${reached ? "bg-accent text-white" : "bg-line-subtle text-muted"}`}>
-                  {done ? <Check size={14} /> : i + 1}
-                </span>
-                <span className={`text-[13px] font-medium ${i === stepIndex ? "text-ink" : reached ? "text-secondary hover:text-ink" : "text-muted"}`}>{s.label}</span>
-              </button>
-              {i < STEPS.length - 1 && <div className="h-px flex-1 bg-line" />}
-            </div>
-          );
-        })}
-      </div>
+      <Stepper steps={STEPS} current={stepIndex} onStepClick={(i) => setStep(STEPS[i].key)} />
 
       {error && <div className="rounded-[8px] border border-red-200 bg-red-50 p-3 text-[13px] text-red-700">{error}</div>}
 
