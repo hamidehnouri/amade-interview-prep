@@ -26,3 +26,15 @@ export async function coachAnswer(question: string, answer: string, settings: Ge
   if (!data.ok) throw new Error(data.error || "Request failed");
   return data.feedback as Feedback;
 }
+
+export type EvalResult = { technique: string; feedback?: Feedback; error?: string };
+export async function evaluate(question: string, answer: string, techniques: string[], systemPrompt: string | null, settings: GenerationSettings) {
+  const res = await fetch("/api/evaluate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ question, answer, techniques, systemPrompt, settings }),
+  });
+  const data = await res.json();
+  if (!data.ok) throw new Error(data.error || "Evaluation failed");
+  return data.results as EvalResult[];
+}

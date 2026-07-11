@@ -10,6 +10,7 @@ import Toggle from "@/components/ui/Toggle";
 import Button from "@/components/ui/Button";
 import RadioGroup from "@/components/ui/RadioGroup";
 import Tooltip from "@/components/ui/Tooltip";
+import PromptEvaluation from "@/components/PromptEvaluation";
 import Textarea from "@/components/ui/Textarea";
 import { COACH_PROMPTS } from "@/lib/prompts";
 import { useSettings, DEFAULT_SETTINGS, type GenerationSettings } from "@/lib/settings";
@@ -118,6 +119,19 @@ export default function SettingsPage() {
 
       {dev && (
         <Card rail>
+          <Eyebrow>Safety</Eyebrow>
+          <div className="flex flex-col gap-4">
+            <Toggle checked={draft.injectionGuard} onChange={(v) => set({ injectionGuard: v })}
+              label="Prompt-injection guard" hint="Screen user input for attempts to override the system prompt before sending to the model." />
+            <Toggle checked={draft.outputModeration} onChange={(v) => set({ outputModeration: v })}
+              label="Output moderation" hint="Check generated feedback for unsafe content before showing it." />
+          </div>
+          <p className="mt-3 text-[12px] italic text-muted">Guards stay on for end users; only developers can change them here.</p>
+        </Card>
+      )}
+
+      {dev && (
+        <Card rail>
           <Eyebrow>Prompting technique</Eyebrow>
           <RadioGroup
             value={draft.technique}
@@ -159,18 +173,7 @@ export default function SettingsPage() {
         </Card>
       )}
 
-      {dev && (
-        <Card rail>
-          <Eyebrow>Safety</Eyebrow>
-          <div className="flex flex-col gap-4">
-            <Toggle checked={draft.injectionGuard} onChange={(v) => set({ injectionGuard: v })}
-              label="Prompt-injection guard" hint="Screen user input for attempts to override the system prompt before sending to the model." />
-            <Toggle checked={draft.outputModeration} onChange={(v) => set({ outputModeration: v })}
-              label="Output moderation" hint="Check generated feedback for unsafe content before showing it." />
-          </div>
-          <p className="mt-3 text-[12px] italic text-muted">Guards stay on for end users; only developers can change them here.</p>
-        </Card>
-      )}
+      {dev && <PromptEvaluation />}
 
       <div className="flex justify-end gap-3">
         <button type="button" onClick={() => setDraft(DEFAULT_SETTINGS)} className="rounded-[10px] border border-line px-5 py-2.5 font-display text-[14px] font-semibold text-secondary transition-colors hover:bg-line-subtle">
