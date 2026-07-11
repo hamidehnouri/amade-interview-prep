@@ -8,6 +8,8 @@ export const SettingsSchema = z.object({
   reasoning: z.enum(["minimal", "low", "medium", "high"]).catch("medium"),
   selfCritique: z.boolean().default(false),
   customPrompt: z.string().nullable().catch(null),
+  injectionGuard: z.boolean().catch(true),
+  outputModeration: z.boolean().catch(true),
 });
 
 // Incoming request bodies

@@ -9,8 +9,10 @@ export async function POST(req: Request) {
   if (!parsed.success) return NextResponse.json({ ok: false, error: parsed.error.issues[0]?.message ?? "Invalid request." });
   const { jobDescription, settings } = parsed.data;
 
-  const guard = ruleGuard(jobDescription);
-  if (!guard.safe) return NextResponse.json({ ok: false, error: guard.reason });
+  if (settings.injectionGuard) {
+    const guard = ruleGuard(jobDescription);
+    if (!guard.safe) return NextResponse.json({ ok: false, error: guard.reason });
+  }
 
   const g = {
     model: settings.model,

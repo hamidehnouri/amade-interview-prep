@@ -9,6 +9,7 @@ import Slider from "@/components/ui/Slider";
 import Toggle from "@/components/ui/Toggle";
 import Button from "@/components/ui/Button";
 import RadioGroup from "@/components/ui/RadioGroup";
+import Tooltip from "@/components/ui/Tooltip";
 import Textarea from "@/components/ui/Textarea";
 import { COACH_PROMPTS } from "@/lib/prompts";
 import { useSettings, DEFAULT_SETTINGS, type GenerationSettings } from "@/lib/settings";
@@ -134,13 +135,17 @@ export default function SettingsPage() {
                   </button>
                 )}
                 {editingPrompt ? (
-                  <button type="button" title="Save prompt" onClick={() => setEditingPrompt(false)} className="rounded-md p-1.5 text-accent transition-colors hover:bg-blue-50">
-                    <Check size={15} />
-                  </button>
+                  <Tooltip label="Save prompt">
+                    <button type="button" onClick={() => setEditingPrompt(false)} className="rounded-md p-1.5 text-accent transition-colors hover:bg-blue-50">
+                      <Check size={15} />
+                    </button>
+                  </Tooltip>
                 ) : (
-                  <button type="button" title="Edit prompt" onClick={() => setEditingPrompt(true)} className="rounded-md p-1.5 text-muted transition-colors hover:bg-line-subtle hover:text-ink">
-                    <Pencil size={15} />
-                  </button>
+                  <Tooltip label="Edit prompt">
+                    <button type="button" onClick={() => setEditingPrompt(true)} className="rounded-md p-1.5 text-muted transition-colors hover:bg-line-subtle hover:text-ink">
+                      <Pencil size={15} />
+                    </button>
+                  </Tooltip>
                 )}
               </div>
             </div>
@@ -151,6 +156,19 @@ export default function SettingsPage() {
               {editingPrompt ? "Editing — click the check to lock it in." : `Showing the ${TECH_LABEL[draft.technique]} template. Click the pencil to edit.`}
             </p>
           </div>
+        </Card>
+      )}
+
+      {dev && (
+        <Card rail>
+          <Eyebrow>Safety</Eyebrow>
+          <div className="flex flex-col gap-4">
+            <Toggle checked={draft.injectionGuard} onChange={(v) => set({ injectionGuard: v })}
+              label="Prompt-injection guard" hint="Screen user input for attempts to override the system prompt before sending to the model." />
+            <Toggle checked={draft.outputModeration} onChange={(v) => set({ outputModeration: v })}
+              label="Output moderation" hint="Check generated feedback for unsafe content before showing it." />
+          </div>
+          <p className="mt-3 text-[12px] italic text-muted">Guards stay on for end users; only developers can change them here.</p>
         </Card>
       )}
 
