@@ -9,12 +9,8 @@ import Slider from "@/components/ui/Slider";
 import Toggle from "@/components/ui/Toggle";
 import Button from "@/components/ui/Button";
 import { useSettings, DEFAULT_SETTINGS, type GenerationSettings } from "@/lib/settings";
+import { MODELS } from "@/lib/models";
 
-const MODELS = [
-  { value: "openai/gpt-5-mini", label: "GPT-5 mini · balanced", inp: 0.25, out: 2.0 },
-  { value: "openai/gpt-5-nano", label: "GPT-5 nano · cheapest", inp: 0.05, out: 0.4 },
-  { value: "openai/gpt-5", label: "GPT-5 · highest quality", inp: 1.25, out: 10.0 },
-];
 const TECHNIQUES = [
   { value: "zero_shot", label: "Zero-shot" },
   { value: "chain_of_thought", label: "Chain-of-thought" },
@@ -32,6 +28,7 @@ export default function SettingsPage() {
   const dirty = JSON.stringify(draft) !== JSON.stringify(settings);
 
   const m = MODELS.find((x) => x.value === draft.model)!;
+  const isReasoning = m.reasoning;
   const cost = ((1200 * m.inp + draft.maxTokens * m.out) / 1e6) * 8;
   const reasoningIdx = Math.max(0, REASONING.indexOf(draft.reasoning));
 
@@ -70,8 +67,8 @@ export default function SettingsPage() {
       <Card rail>
         <Kicker label="Generation" />
         <div className="grid grid-cols-2 gap-x-8 gap-y-5">
-          <Slider label="Temperature" value={draft.temperature} min={0} max={1} step={0.1} format={(v) => v.toFixed(1)} disabled hint="Ignored when reasoning is on." />
-          <Slider label="Reasoning effort" value={reasoningIdx} min={0} max={3} step={1} onChange={(i) => set({ reasoning: REASONING[i] })} format={(v) => cap(REASONING[v])} ticks={["Minimal", "Low", "Medium", "High"]} hint="Higher = more step-by-step thinking, slower & pricier." />
+          <Slider label="Temperature" value={draft.temperature} min={0} max={1} step={0.1} format={(v) => v.toFixed(1)} disabled={isReasoning} onChange={(v) => set({ temperature: v })} hint={isReasoning ? "Ignored by reasoning models." : "Sampling randomness — higher is more varied."} />
+          <Slider label="Reasoning effort" value={reasoningIdx} min={0} max={3} step={1} disabled={!isReasoning} onChange={(i) => set({ reasoning: REASONING[i] })} format={(v) => cap(REASONING[v])} ticks={["Minimal", "Low", "Medium", "High"]} hint={isReasoning ? "Higher = more step-by-step thinking, slower & pricier." : "Not used by this model."} />
           <Slider label="Max output tokens" value={draft.maxTokens} min={256} max={4096} step={128} onChange={(v) => set({ maxTokens: v })} format={(v) => v.toLocaleString()} hint="Longer = more detailed feedback." />
           <div className="flex flex-col gap-4">
             <Toggle checked={draft.selfCritique} onChange={(v) => set({ selfCritique: v })} label="Self-critique pass" hint="Model reviews its own scoring before returning." />
