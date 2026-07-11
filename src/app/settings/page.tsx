@@ -1,4 +1,6 @@
 "use client";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import Card from "@/components/ui/Card";
 import Kicker from "@/components/ui/Kicker";
@@ -35,6 +37,9 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto flex max-w-[920px] flex-col gap-6">
+      <Link href="/" className="inline-flex w-fit items-center gap-1.5 text-[13px] font-medium text-secondary transition-colors hover:text-ink">
+        <ArrowLeft size={16} /> Back
+      </Link>
       <h1 className="font-display text-[24px] font-bold tracking-tight text-ink">Settings</h1>
       <p className="max-w-[560px] text-[14px] text-secondary">
         Tune how the AI interviewer generates questions and scores answers. These settings apply to every new session.
