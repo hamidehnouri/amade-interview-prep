@@ -24,11 +24,20 @@ export async function generateQuestions(topics: string[], seniority: string, g: 
 
 export async function coachAnswer(question: string, answer: string, technique: string, selfCritique: boolean, g: LlmOpts) {
   const system = COACH_PROMPTS[technique] ?? COACH_PROMPTS.chain_of_thought;
-  let parsed = toJson(await askLlm(system, `Question: ${question}\n\nMy answer: ${answer}`, g), "the feedback");
+  const first = FeedbackSchema.safeParse(toJson(await askLlm(system, `Question: ${question}\n\nMy answer: ${answer}`, g), "the feedback"));
+  if (!first.success) throw new Error("The feedback came back incomplete — try again or raise Max output tokens.");
+  let result = first.data;
+
   if (selfCritique) {
-    parsed = toJson(await askLlm(CRITIQUE_PROMPT, `Question: ${question}\n\nAnswer: ${answer}\n\nDraft evaluation:\n${JSON.stringify(parsed)}`, g), "the feedback");
+    // Best-effort: refine only if the critique pass returns a valid evaluation; otherwise keep the first.
+    try {
+      const review = FeedbackSchema.safeParse(
+        toJson(await askLlm(CRITIQUE_PROMPT, `Question: ${question}\n\nAnswer: ${answer}\n\nDraft evaluation:\n${JSON.stringify(result)}`, g), "the feedback")
+      );
+      if (review.success) result = review.data;
+    } catch {
+      /* keep the valid first pass */
+    }
   }
-  const r = FeedbackSchema.safeParse(parsed);
-  if (!r.success) throw new Error("The feedback came back incomplete — try again or raise Max output tokens.");
-  return r.data;
+  return result;
 }

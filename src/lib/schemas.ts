@@ -34,7 +34,7 @@ export const QuestionsSchema = z.object({
     .array(z.object({ question: z.string(), category: z.string(), difficulty: z.string(), meta: z.string() }))
     .min(1),
 });
-const Star = z.object({ feedback: z.string(), score: z.number() });
+const Star = z.object({ feedback: z.string(), score: z.coerce.number() });
 export const FeedbackSchema = z.object({
   situation: Star,
   task: Star,
