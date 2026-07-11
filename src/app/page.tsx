@@ -68,7 +68,7 @@ export default function Home() {
 
       <div className="flex items-center border-t border-line pt-5">
         <div className="flex flex-1 justify-start">
-          <NavBtn dir="prev" disabled={!PREV[w.step]} onClick={() => PREV[w.step] && setWizard({ step: PREV[w.step]! })}>Previous</NavBtn>
+          {PREV[w.step] && <NavBtn dir="prev" onClick={() => setWizard({ step: PREV[w.step]! })}>Previous</NavBtn>}
         </div>
         <div className="flex-1 text-center font-mono text-[12px] text-muted">Step {stepIndex + 1} of {STEPS.length}</div>
         <div className="flex flex-1 justify-end gap-3">
