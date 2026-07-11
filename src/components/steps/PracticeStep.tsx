@@ -25,7 +25,7 @@ export default function PracticeStep({ question, index, total, answer, onChange 
             <span className="rounded-[8px] border border-blue-200 bg-blue-50 px-[7px] py-[3px] font-mono text-[11px] uppercase tracking-[0.08em] text-blue-700">{question.category}</span>
           </div>
         </div>
-        <div className="mt-3 font-display text-[20px] font-semibold leading-snug text-ink">{question.question}</div>
+        <div className="mt-3 font-display text-[20px] font-medium leading-snug text-ink">{question.question}</div>
         <div className="mt-4"><Textarea value={answer} onChange={onChange} rows={9} placeholder="Type your answer here…" /></div>
       </Card>
     </>

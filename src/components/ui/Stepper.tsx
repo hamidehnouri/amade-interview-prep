@@ -2,11 +2,11 @@ import { Check } from "lucide-react";
 
 export type StepItem = { key: string; label: string };
 
-export default function Stepper({ steps, current, onStepClick }: {
-  steps: StepItem[]; current: number; onStepClick?: (index: number) => void;
+export default function Stepper({ steps, current, onStepClick, className = "" }: {
+  steps: StepItem[]; current: number; onStepClick?: (index: number) => void; className?: string;
 }) {
   return (
-    <div className="flex items-center gap-2">
+    <div className={`flex items-center gap-2 ${className}`}>
       {steps.map((s, i) => {
         const reached = i <= current;
         const done = i < current;

@@ -18,7 +18,7 @@ export default function QuestionCard({ category, difficulty, question, meta, pra
           </span>
         )}
       </div>
-      <div className="mt-3 font-display text-[18px] font-semibold leading-snug text-ink">{question}</div>
+      <div className="mt-3 font-display text-[18px] font-medium leading-snug text-ink">{question}</div>
       <div className="mt-3 flex items-center justify-between gap-3">
         {meta && <span className="text-[12px] text-muted">{meta}</span>}
         {onPractice && (

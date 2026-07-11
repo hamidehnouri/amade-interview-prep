@@ -53,14 +53,16 @@ export default function Home() {
 
   return (
     <div className="mx-auto flex max-w-[860px] flex-col gap-6">
-      <Stepper steps={STEPS} current={stepIndex} onStepClick={(i) => setStep(STEPS[i].key)} />
+      <Stepper steps={STEPS} current={stepIndex} onStepClick={(i) => setStep(STEPS[i].key)} className="mb-4" />
 
       {error && <div className="rounded-[8px] border border-red-200 bg-red-50 p-3 text-[13px] text-red-700">{error}</div>}
 
-      {step === "analyse" && <AnalyseStep jd={jd} onChange={setJd} />}
-      {step === "questions" && analysis && <QuestionsStep analysis={analysis} questions={questions} onOpen={openQuestion} />}
-      {step === "practice" && q && <PracticeStep question={q} index={selected} total={questions.length} answer={answer} onChange={setAnswer} />}
-      {step === "score" && feedback && q && <ScoreStep question={q} feedback={feedback} />}
+      <div className="flex min-h-[540px] flex-col gap-6">
+        {step === "analyse" && <AnalyseStep jd={jd} onChange={setJd} />}
+        {step === "questions" && analysis && <QuestionsStep analysis={analysis} questions={questions} onOpen={openQuestion} />}
+        {step === "practice" && q && <PracticeStep question={q} index={selected} total={questions.length} answer={answer} onChange={setAnswer} />}
+        {step === "score" && feedback && q && <ScoreStep question={q} feedback={feedback} />}
+      </div>
 
       <div className="flex items-center border-t border-line pt-5">
         <div className="flex flex-1 justify-start">
