@@ -35,6 +35,7 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto flex max-w-[920px] flex-col gap-6">
+      <h1 className="font-display text-[24px] font-bold tracking-tight text-ink">Settings</h1>
       <p className="max-w-[560px] text-[14px] text-secondary">
         Tune how the AI interviewer generates questions and scores answers. These settings apply to every new session.
       </p>
