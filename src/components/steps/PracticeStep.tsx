@@ -1,6 +1,7 @@
 import { Bot } from "lucide-react";
 import Card from "@/components/ui/Card";
 import Textarea from "@/components/ui/Textarea";
+import Recorder from "@/components/ui/Recorder";
 import type { Question } from "@/lib/api";
 
 export default function PracticeStep({ question, practicedCount, total, answer, onChange }: {
@@ -30,7 +31,11 @@ export default function PracticeStep({ question, practicedCount, total, answer, 
           Structure your answer with <span className="font-semibold">STAR</span> — Situation, Task, Action, Result.
         </div>
         <div className="mt-4 flex flex-1 flex-col">
-          <Textarea value={answer} onChange={onChange} grow placeholder="Type your answer here…" />
+          <div className="mb-1.5 flex items-center justify-between">
+            <span className="font-display text-[14px] font-semibold text-ink">Your answer</span>
+            <Recorder onTranscript={(t) => onChange(answer ? `${answer} ${t}` : t)} />
+          </div>
+          <Textarea value={answer} onChange={onChange} grow placeholder="Type or record your answer here…" />
         </div>
       </Card>
     </>
