@@ -89,18 +89,14 @@ export default function SettingsPage() {
             <div className="mt-1 flex justify-between"><span>Output</span><span>${priced.out.toFixed(2)} / 1M</span></div>
           </div>
         </div>
-        {dev && (
-          <>
-            <hr className="my-[18px] border-line" />
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="font-display text-[14px] font-semibold text-ink">Estimated cost per session</div>
-                <div className="text-[12px] text-muted">~8 questions · {draft.maxTokens.toLocaleString()} max output tokens each</div>
-              </div>
-              <div className="font-mono text-[24px] font-bold tracking-[-0.01em] text-ink">${cost.toFixed(2)}</div>
-            </div>
-          </>
-        )}
+        <hr className="my-[18px] border-line" />
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="font-display text-[14px] font-semibold text-ink">Estimated cost per session</div>
+            <div className="text-[12px] text-muted">~8 questions · {draft.maxTokens.toLocaleString()} max output tokens each</div>
+          </div>
+          <div className="font-mono text-[24px] font-bold tracking-[-0.01em] text-ink">${cost.toFixed(2)}</div>
+        </div>
       </Card>
 
       <Card rail={dev}>
