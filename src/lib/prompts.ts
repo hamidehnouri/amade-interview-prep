@@ -58,11 +58,12 @@ Respond with ONLY a valid JSON object, no extra text, in this shape:
 }`;
 
 export function generatePrompt(topics: string[], seniority: string, n = 5) {
-  return `You are an experienced technical interviewer.
-Generate exactly ${n} interview questions for a ${seniority}-level candidate.
-Base them on these topics: ${topics.join(", ")}.
+  return `You are an experienced interviewer.
+Generate exactly ${n} BEHAVIOURAL interview questions for a ${seniority}-level candidate — questions about past experiences, teamwork, conflict, ownership, and decision-making that a candidate would answer with the STAR framework.
+Do NOT include technical, coding, or system-design questions.
+Use these topics for context where relevant: ${topics.join(", ")}.
 Respond with ONLY a valid JSON object: {"questions": [ ... ]} where each item is:
-{"question": "...", "category": "Behavioural | Technical | System design | Product sense | Leadership", "difficulty": "Easy | Medium | Hard", "meta": "~N min · M follow-ups"}`;
+{"question": "...", "category": "Behavioural", "difficulty": "Easy | Medium | Hard", "meta": "~N min · M follow-ups"}`;
 }
 
 export const CRITIQUE_PROMPT = `You are a strict reviewer of interview feedback.
