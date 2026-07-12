@@ -60,7 +60,7 @@ export default function Home() {
 
       {error && <div className="rounded-[8px] border border-red-200 bg-red-50 p-3 text-[13px] text-red-700">{error}</div>}
 
-      <div className="flex min-h-[540px] flex-col gap-6">
+      <div className="flex min-h-[420px] flex-col gap-6 sm:min-h-[540px]">
         {w.step === "analyse" && <AnalyseStep jd={w.jd} onChange={onJdChange} />}
         {w.step === "questions" && w.analysis && <QuestionsStep analysis={w.analysis} questions={w.questions} results={w.results} onOpen={openQuestion} />}
         {w.step === "practice" && q && <PracticeStep question={q} practicedCount={practicedCount} total={w.questions.length} answer={w.answer} onChange={(v) => setWizard({ answer: v })} />}
@@ -71,7 +71,7 @@ export default function Home() {
         <div>
           {PREV[w.step] && <NavBtn dir="prev" onClick={() => setWizard({ step: PREV[w.step]! })}>Previous</NavBtn>}
         </div>
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-[12px] text-muted">Step {stepIndex + 1} of {STEPS.length}</div>
+        <div className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 font-mono text-[12px] text-muted sm:block">Step {stepIndex + 1} of {STEPS.length}</div>
         <div className="flex justify-end">
           {w.step === "analyse" && (
             <Button onClick={runAnalyse} loading={loading} disabled={!w.jd.trim()}>

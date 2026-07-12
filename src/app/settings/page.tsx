@@ -60,7 +60,7 @@ export default function SettingsPage() {
         <ArrowLeft size={16} /> Back
       </Link>
 
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col items-start gap-4 sm:flex-row sm:justify-between">
         <div>
           <h1 className="font-display text-[24px] font-bold tracking-tight text-ink">Settings</h1>
           <p className="text-[13px] text-secondary">{dev ? "Advanced model & prompt configuration." : "Personalise your interview practice."}</p>
@@ -73,7 +73,7 @@ export default function SettingsPage() {
 
       <Card rail={dev}>
         <Eyebrow>Model</Eyebrow>
-        <div className="grid grid-cols-[1fr_auto] gap-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-[1fr_auto]">
           <Select label="Interview engine" value={draft.model} options={MODELS.map(({ value, label }) => ({ value, label }))} onChange={(v) => set({ model: v })} />
           <div className="min-w-[190px] rounded-[8px] bg-line-subtle p-3 font-mono text-[12px] text-secondary">
             <div className="flex justify-between"><span>Input</span><span>${m.inp.toFixed(2)} / 1M</span></div>
@@ -96,7 +96,7 @@ export default function SettingsPage() {
 
       <Card rail={dev}>
         <Eyebrow>Generation</Eyebrow>
-        <div className="grid grid-cols-2 gap-x-8 gap-y-5">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-x-8">
           <Slider label="Temperature" value={draft.temperature} min={0} max={1} step={0.1} format={(v) => v.toFixed(1)} disabled={isReasoning} onChange={(v) => set({ temperature: v })} hint={isReasoning ? "Ignored by reasoning models." : "Sampling randomness."} />
           <Slider label="Max output tokens" value={draft.maxTokens} min={256} max={4096} step={128} onChange={(v) => set({ maxTokens: v })} format={(v) => v.toLocaleString()} hint="Longer = more detailed feedback." />
           {dev && (
