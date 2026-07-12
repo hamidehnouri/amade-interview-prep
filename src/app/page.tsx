@@ -67,31 +67,31 @@ export default function Home() {
         {w.step === "score" && w.feedback && q && <ScoreStep question={q} feedback={w.feedback} />}
       </div>
 
-      <div className="relative flex items-center justify-between border-t border-line pt-5">
-        <div>
-          {PREV[w.step] && <NavBtn dir="prev" onClick={() => setWizard({ step: PREV[w.step]! })}>Previous</NavBtn>}
+      <div className="relative flex flex-col gap-3 border-t border-line pt-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="order-2 flex w-full sm:order-none sm:w-auto">
+          {PREV[w.step] && <NavBtn dir="prev" className="w-full sm:w-auto" onClick={() => setWizard({ step: PREV[w.step]! })}>Previous</NavBtn>}
         </div>
         <div className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 font-mono text-[12px] text-muted sm:block">Step {stepIndex + 1} of {STEPS.length}</div>
-        <div className="flex justify-end">
+        <div className="order-1 flex w-full sm:order-none sm:w-auto sm:justify-end">
           {w.step === "analyse" && (
-            <Button onClick={runAnalyse} loading={loading} disabled={!w.jd.trim()}>
+            <Button className="w-full sm:w-auto" onClick={runAnalyse} loading={loading} disabled={!w.jd.trim()}>
               <Sparkles size={16} /> Analyse &amp; generate
             </Button>
           )}
           {w.step === "questions" && (
-            <Button onClick={() => openQuestion(0)} disabled={w.questions.length === 0}>
+            <Button className="w-full sm:w-auto" onClick={() => openQuestion(0)} disabled={w.questions.length === 0}>
               Start practice <ChevronRight size={16} />
             </Button>
           )}
           {w.step === "practice" && (
-            <Button onClick={runFeedback} loading={loading} disabled={!w.answer.trim()}>
+            <Button className="w-full sm:w-auto" onClick={runFeedback} loading={loading} disabled={!w.answer.trim()}>
               Submit &amp; see score <ChevronRight size={16} />
             </Button>
           )}
           {w.step === "score" && (
-            <div className="flex flex-col items-end gap-2">
-              <NavBtn onClick={() => setWizard({ answer: "", feedback: null, step: "practice" })}>Retry this question</NavBtn>
-              <NavBtn dir="next" onClick={() => setWizard({ step: "questions" })}>All questions</NavBtn>
+            <div className="flex w-full flex-col gap-2 sm:w-auto sm:items-end">
+              <NavBtn className="w-full sm:w-auto" onClick={() => setWizard({ answer: "", feedback: null, step: "practice" })}>Retry this question</NavBtn>
+              <NavBtn dir="next" className="w-full sm:w-auto" onClick={() => setWizard({ step: "questions" })}>All questions</NavBtn>
             </div>
           )}
         </div>
@@ -100,9 +100,9 @@ export default function Home() {
   );
 }
 
-function NavBtn({ dir, onClick, disabled, children }: { dir?: "prev" | "next"; onClick: () => void; disabled?: boolean; children: React.ReactNode }) {
+function NavBtn({ dir, onClick, disabled, className, children }: { dir?: "prev" | "next"; onClick: () => void; disabled?: boolean; className?: string; children: React.ReactNode }) {
   return (
-    <Button variant="ghost" onClick={onClick} disabled={disabled}>
+    <Button variant="ghost" onClick={onClick} disabled={disabled} className={className}>
       {dir === "prev" && <ChevronLeft size={16} />}
       {children}
       {dir === "next" && <ChevronRight size={16} />}
