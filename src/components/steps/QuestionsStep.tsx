@@ -8,6 +8,9 @@ import QuestionCard from "@/components/ui/QuestionCard";
 import type { Analysis, Question, Feedback } from "@/lib/api";
 
 // Rough single-line fit for the focus chips (pre-responsive; ~800px card).
+const STAR = ["situation", "task", "action", "result"] as const;
+const overall = (fb: Feedback) => Math.round((STAR.reduce((a, k) => a + fb[k].score, 0) / STAR.length) * 10);
+
 const CHAR = 6.7, PAD = 30, GAP = 8, BUDGET = 800, RESERVE = 100;
 function fitCount(skills: string[]) {
   let used = 0, count = 0;
@@ -54,9 +57,12 @@ export default function QuestionsStep({ analysis, questions, results, onOpen }: 
         </div>
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        {questions.map((question, i) => (
-          <QuestionCard key={question.id} category={question.category} difficulty={question.difficulty} question={question.question} meta="Tailored to JD" practiced={!!results[question.id]} onPractice={() => onOpen(i)} />
-        ))}
+        {questions.map((question, i) => {
+          const fb = results[question.id];
+          return (
+            <QuestionCard key={question.id} category={question.category} difficulty={question.difficulty} question={question.question} meta="Tailored to JD" score={fb ? overall(fb) : null} onPractice={() => onOpen(i)} />
+          );
+        })}
       </div>
     </>
   );
