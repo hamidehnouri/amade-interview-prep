@@ -29,10 +29,11 @@ export default function Home() {
   const q = w.questions[w.selected];
   const stepIndex = STEPS.findIndex((s) => s.key === w.step);
   const reachable = [true, !!w.analysis, w.questions.length > 0, !!w.feedback];
+  const practicedCount = Object.keys(w.results).length;
 
   function onJdChange(v: string) {
     if (w.analysis || w.questions.length || w.feedback) {
-      setWizard({ jd: v, analysis: null, questions: [], selected: 0, answer: "", feedback: null });
+      setWizard({ jd: v, analysis: null, questions: [], selected: 0, answer: "", feedback: null, results: {} });
     } else {
       setWizard({ jd: v });
     }
@@ -41,7 +42,7 @@ export default function Home() {
     setError(""); setLoading(true);
     try {
       const res = await analyze(w.jd, settings);
-      setWizard({ analysis: res.analysis, questions: res.questions, step: "questions" });
+      setWizard({ analysis: res.analysis, questions: res.questions, results: {}, selected: 0, answer: "", feedback: null, step: "questions" });
     } catch (e) { setError(errMsg(e)); } finally { setLoading(false); }
   }
   function openQuestion(i: number) { setWizard({ selected: i, answer: "", feedback: null, step: "practice" }); }
@@ -49,7 +50,7 @@ export default function Home() {
     setError(""); setLoading(true);
     try {
       const fb = await coachAnswer(q.question, w.answer, settings, settings.technique, settings.selfCritique);
-      setWizard({ feedback: fb, step: "score" });
+      setWizard({ feedback: fb, results: { ...w.results, [q.id]: fb }, step: "score" });
     } catch (e) { setError(errMsg(e)); } finally { setLoading(false); }
   }
 
@@ -61,17 +62,17 @@ export default function Home() {
 
       <div className="flex min-h-[540px] flex-col gap-6">
         {w.step === "analyse" && <AnalyseStep jd={w.jd} onChange={onJdChange} />}
-        {w.step === "questions" && w.analysis && <QuestionsStep analysis={w.analysis} questions={w.questions} onOpen={openQuestion} />}
-        {w.step === "practice" && q && <PracticeStep question={q} index={w.selected} total={w.questions.length} answer={w.answer} onChange={(v) => setWizard({ answer: v })} />}
+        {w.step === "questions" && w.analysis && <QuestionsStep analysis={w.analysis} questions={w.questions} results={w.results} onOpen={openQuestion} />}
+        {w.step === "practice" && q && <PracticeStep question={q} practicedCount={practicedCount} total={w.questions.length} answer={w.answer} onChange={(v) => setWizard({ answer: v })} />}
         {w.step === "score" && w.feedback && q && <ScoreStep question={q} feedback={w.feedback} />}
       </div>
 
-      <div className="flex items-center border-t border-line pt-5">
-        <div className="flex flex-1 justify-start">
+      <div className="relative flex items-center justify-between border-t border-line pt-5">
+        <div>
           {PREV[w.step] && <NavBtn dir="prev" onClick={() => setWizard({ step: PREV[w.step]! })}>Previous</NavBtn>}
         </div>
-        <div className="flex-1 text-center font-mono text-[12px] text-muted">Step {stepIndex + 1} of {STEPS.length}</div>
-        <div className="flex flex-1 justify-end gap-3">
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-[12px] text-muted">Step {stepIndex + 1} of {STEPS.length}</div>
+        <div className="flex justify-end">
           {w.step === "analyse" && (
             <Button onClick={runAnalyse} loading={loading} disabled={!w.jd.trim()}>
               <Sparkles size={16} /> Analyse &amp; generate
@@ -88,10 +89,10 @@ export default function Home() {
             </Button>
           )}
           {w.step === "score" && (
-            <>
-              <NavBtn onClick={() => setWizard({ answer: "", feedback: null, step: "practice" })}>Retry</NavBtn>
-              <NavBtn dir="next" onClick={() => (w.selected < w.questions.length - 1 ? openQuestion(w.selected + 1) : setWizard({ step: "questions" }))}>Next</NavBtn>
-            </>
+            <div className="flex flex-col items-end gap-2">
+              <NavBtn onClick={() => setWizard({ answer: "", feedback: null, step: "practice" })}>Retry this question</NavBtn>
+              <NavBtn dir="next" onClick={() => setWizard({ step: "questions" })}>All questions</NavBtn>
+            </div>
           )}
         </div>
       </div>

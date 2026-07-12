@@ -11,8 +11,9 @@ export type WizardState = {
   selected: number;
   answer: string;
   feedback: Feedback | null;
+  results: Record<number, Feedback>;
 };
-const DEFAULT: WizardState = { step: "analyse", jd: "", analysis: null, questions: [], selected: 0, answer: "", feedback: null };
+const DEFAULT: WizardState = { step: "analyse", jd: "", analysis: null, questions: [], selected: 0, answer: "", feedback: null, results: {} };
 const KEY = "amade.wizard";
 
 let state: WizardState = DEFAULT;

@@ -3,15 +3,15 @@ import Card from "@/components/ui/Card";
 import Textarea from "@/components/ui/Textarea";
 import type { Question } from "@/lib/api";
 
-export default function PracticeStep({ question, index, total, answer, onChange }: {
-  question: Question; index: number; total: number; answer: string; onChange: (v: string) => void;
+export default function PracticeStep({ question, practicedCount, total, answer, onChange }: {
+  question: Question; practicedCount: number; total: number; answer: string; onChange: (v: string) => void;
 }) {
-  const pct = ((index + 1) / total) * 100;
+  const pct = total ? (practicedCount / total) * 100 : 0;
   return (
     <>
       <div>
         <div className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">
-          Practice · Question {index + 1} of {total}
+          Practice · {practicedCount} of {total} practised
         </div>
         <div className="mt-2 h-1 rounded bg-line-subtle">
           <div className="h-1 rounded bg-accent transition-all" style={{ width: `${pct}%` }} />
@@ -26,7 +26,12 @@ export default function PracticeStep({ question, index, total, answer, onChange 
           </div>
         </div>
         <div className="mt-3 font-display text-[20px] font-medium leading-snug text-ink">{question.question}</div>
-        <div className="mt-4 flex flex-1 flex-col"><Textarea value={answer} onChange={onChange} grow placeholder="Type your answer here…" /></div>
+        <div className="mt-3 rounded-[8px] bg-blue-50 px-3 py-2 text-[12px] text-blue-700">
+          Structure your answer with <span className="font-semibold">STAR</span> — Situation, Task, Action, Result.
+        </div>
+        <div className="mt-4 flex flex-1 flex-col">
+          <Textarea value={answer} onChange={onChange} grow placeholder="Type your answer here…" />
+        </div>
       </Card>
     </>
   );
