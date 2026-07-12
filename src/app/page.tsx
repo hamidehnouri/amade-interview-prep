@@ -102,11 +102,10 @@ export default function Home() {
 
 function NavBtn({ dir, onClick, disabled, children }: { dir?: "prev" | "next"; onClick: () => void; disabled?: boolean; children: React.ReactNode }) {
   return (
-    <button type="button" onClick={onClick} disabled={disabled}
-      className="inline-flex items-center gap-1.5 rounded-[10px] border border-line px-4 py-2.5 font-display text-[14px] font-semibold text-secondary transition-colors hover:bg-line-subtle disabled:cursor-not-allowed disabled:opacity-40">
+    <Button variant="ghost" onClick={onClick} disabled={disabled}>
       {dir === "prev" && <ChevronLeft size={16} />}
       {children}
       {dir === "next" && <ChevronRight size={16} />}
-    </button>
+    </Button>
   );
 }

@@ -2,15 +2,14 @@
 import { useState } from "react";
 import { Check } from "lucide-react";
 import Card from "@/components/ui/Card";
+import Callout from "@/components/ui/Callout";
 import Eyebrow from "@/components/ui/Eyebrow";
 import StepHeader from "@/components/ui/StepHeader";
 import QuestionCard from "@/components/ui/QuestionCard";
+import { overallScore } from "@/lib/score";
 import type { Analysis, Question, Feedback } from "@/lib/api";
 
 // Rough single-line fit for the focus chips (pre-responsive; ~800px card).
-const STAR = ["situation", "task", "action", "result"] as const;
-const overall = (fb: Feedback) => Math.round((STAR.reduce((a, k) => a + fb[k].score, 0) / STAR.length) * 10);
-
 const CHAR = 6.7, PAD = 30, GAP = 8, BUDGET = 800, RESERVE = 100;
 function fitCount(skills: string[]) {
   let used = 0, count = 0;
@@ -49,18 +48,18 @@ export default function QuestionsStep({ analysis, questions, results, onOpen }: 
           )}
         </div>
       </Card>
-      <div className="flex items-start gap-3 rounded-[8px] border border-blue-200 bg-blue-50 p-4">
+      <Callout className="flex items-start gap-3">
         <Check className="mt-0.5 shrink-0 text-accent" size={18} />
         <div>
           <div className="font-display text-[14px] font-semibold text-ink">{questions.length} questions generated</div>
           <div className="text-[13px] text-secondary">Click a question to practice it.</div>
         </div>
-      </div>
+      </Callout>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {questions.map((question, i) => {
           const fb = results[question.id];
           return (
-            <QuestionCard key={question.id} category={question.category} difficulty={question.difficulty} question={question.question} meta="Tailored to JD" score={fb ? overall(fb) : null} onPractice={() => onOpen(i)} />
+            <QuestionCard key={question.id} category={question.category} difficulty={question.difficulty} question={question.question} meta="Tailored to JD" score={fb ? overallScore(fb) : null} onPractice={() => onOpen(i)} />
           );
         })}
       </div>

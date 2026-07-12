@@ -1,5 +1,6 @@
 import { Bot } from "lucide-react";
 import Card from "@/components/ui/Card";
+import Tag from "@/components/ui/Tag";
 import Textarea from "@/components/ui/Textarea";
 import Recorder from "@/components/ui/Recorder";
 import type { Question } from "@/lib/api";
@@ -23,7 +24,7 @@ export default function PracticeStep({ question, practicedCount, total, answer, 
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-white"><Bot size={18} /></div>
           <div className="flex items-center gap-2">
             <span className="font-display text-[13px] font-semibold text-ink">AI Interviewer</span>
-            <span className="rounded-[8px] border border-blue-200 bg-blue-50 px-[7px] py-[3px] font-mono text-[11px] uppercase tracking-[0.08em] text-blue-700">{question.category}</span>
+            <Tag tone="blue">{question.category}</Tag>
           </div>
         </div>
         <div className="mt-3 font-display text-[20px] font-medium leading-snug text-ink">{question.question}</div>
