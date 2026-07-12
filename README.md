@@ -7,6 +7,8 @@ actionable coaching.
 
 Built with Next.js + TypeScript, talking to LLMs through OpenRouter.
 
+**Live demo:** https://amade-interview-prep-omega.vercel.app/
+
 > Originally prototyped in Streamlit (see the `streamlit` branch); this branch is the
 > Next.js rewrite.
 
