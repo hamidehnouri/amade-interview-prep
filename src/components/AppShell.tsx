@@ -8,7 +8,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   return (
     <div className="flex h-full flex-col">
-      <header className="flex items-center justify-between border-b border-line bg-paper px-6 py-3">
+      <header className="flex items-center justify-between border-b border-line bg-paper px-4 py-3 sm:px-6">
         <Link href="/" className="flex items-center gap-2">
           <Image src="/amade-logo.svg" alt="Āmāde" width={22} height={22} priority />
           <span className="font-display text-[20px] font-bold tracking-tight">Āmāde</span>
@@ -23,7 +23,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </span>
         </div>
       </header>
-      <main className="flex-1 overflow-y-auto p-7">{children}</main>
+      <main className="flex-1 overflow-y-auto p-4 sm:p-7">{children}</main>
     </div>
   );
 }

@@ -8,6 +8,7 @@ import Select from "@/components/ui/Select";
 import Slider from "@/components/ui/Slider";
 import Toggle from "@/components/ui/Toggle";
 import Button from "@/components/ui/Button";
+import { TECHNIQUES, TECH_LABEL } from "@/lib/techniques";
 import RadioGroup from "@/components/ui/RadioGroup";
 import Tooltip from "@/components/ui/Tooltip";
 import PromptEvaluation from "@/components/PromptEvaluation";
@@ -17,14 +18,6 @@ import { useSettings, DEFAULT_SETTINGS, type GenerationSettings } from "@/lib/se
 import { MODELS } from "@/lib/models";
 import { useDevUnlocked, tryUnlock } from "@/lib/devAccess";
 
-const TECHNIQUES = [
-  { value: "zero_shot", label: "Zero-shot", description: "Ask directly. Fastest, lowest token use." },
-  { value: "few_shot", label: "Few-shot", description: "Prime with 2–3 exemplar scored answers first." },
-  { value: "chain_of_thought", label: "Chain-of-thought", description: "Reason step-by-step before scoring. Best accuracy.", badge: "Recommended" },
-  { value: "persona", label: "Persona", description: "Adopt a senior hiring-manager persona." },
-  { value: "rubric", label: "Rubric", description: "Score against an explicit anchored rubric." },
-];
-const TECH_LABEL: Record<string, string> = Object.fromEntries(TECHNIQUES.map((t) => [t.value, t.label]));
 const REASONING = ["minimal", "low", "medium", "high"] as const;
 const cap = (s: string) => s[0].toUpperCase() + s.slice(1);
 
@@ -67,7 +60,7 @@ export default function SettingsPage() {
         <ArrowLeft size={16} /> Back
       </Link>
 
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col items-start gap-4 sm:flex-row sm:justify-between">
         <div>
           <h1 className="font-display text-[24px] font-bold tracking-tight text-ink">Settings</h1>
           <p className="text-[13px] text-secondary">{dev ? "Advanced model & prompt configuration." : "Personalise your interview practice."}</p>
@@ -80,7 +73,7 @@ export default function SettingsPage() {
 
       <Card rail={dev}>
         <Eyebrow>Model</Eyebrow>
-        <div className="grid grid-cols-[1fr_auto] gap-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-[1fr_auto]">
           <Select label="Interview engine" value={draft.model} options={MODELS.map(({ value, label }) => ({ value, label }))} onChange={(v) => set({ model: v })} />
           <div className="min-w-[190px] rounded-[8px] bg-line-subtle p-3 font-mono text-[12px] text-secondary">
             <div className="flex justify-between"><span>Input</span><span>${m.inp.toFixed(2)} / 1M</span></div>
@@ -103,7 +96,7 @@ export default function SettingsPage() {
 
       <Card rail={dev}>
         <Eyebrow>Generation</Eyebrow>
-        <div className="grid grid-cols-2 gap-x-8 gap-y-5">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-x-8">
           <Slider label="Temperature" value={draft.temperature} min={0} max={1} step={0.1} format={(v) => v.toFixed(1)} disabled={isReasoning} onChange={(v) => set({ temperature: v })} hint={isReasoning ? "Ignored by reasoning models." : "Sampling randomness."} />
           <Slider label="Max output tokens" value={draft.maxTokens} min={256} max={4096} step={128} onChange={(v) => set({ maxTokens: v })} format={(v) => v.toLocaleString()} hint="Longer = more detailed feedback." />
           {dev && (
@@ -176,9 +169,7 @@ export default function SettingsPage() {
       {dev && <PromptEvaluation />}
 
       <div className="flex justify-end gap-3">
-        <button type="button" onClick={() => setDraft(DEFAULT_SETTINGS)} className="rounded-[10px] border border-line px-5 py-2.5 font-display text-[14px] font-semibold text-secondary transition-colors hover:bg-line-subtle">
-          Reset to defaults
-        </button>
+        <Button variant="ghost" onClick={() => setDraft(DEFAULT_SETTINGS)}>Reset to defaults</Button>
         <Button onClick={save} disabled={!dirty}>Save changes</Button>
       </div>
 
@@ -199,7 +190,7 @@ export default function SettingsPage() {
               className="mt-1 w-full rounded-[8px] border border-line bg-white px-3 py-2 text-[14px] text-ink outline-none focus:border-accent" />
             {pwErr && <p className="mt-1 text-[12px] text-red-600">{pwErr}</p>}
             <div className="mt-4 flex justify-end gap-2">
-              <button type="button" onClick={() => setPwOpen(false)} className="rounded-[10px] border border-line px-4 py-2 text-[14px] font-semibold text-secondary hover:bg-line-subtle">Cancel</button>
+              <Button variant="ghost" onClick={() => setPwOpen(false)}>Cancel</Button>
               <Button onClick={submitPw}>Unlock</Button>
             </div>
           </div>
