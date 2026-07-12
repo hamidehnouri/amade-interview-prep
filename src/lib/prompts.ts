@@ -58,14 +58,21 @@ Respond with ONLY a valid JSON object, no extra text, in this shape:
 }`;
 
 export function generatePrompt(topics: string[], seniority: string, n = 5) {
-  return `You are an experienced technical interviewer.
-Generate exactly ${n} interview questions for a ${seniority}-level candidate.
-Base them on these topics: ${topics.join(", ")}.
+  return `You are an experienced interviewer.
+Generate exactly ${n} BEHAVIOURAL interview questions for a ${seniority}-level candidate — questions about past experiences, teamwork, conflict, ownership, and decision-making that a candidate would answer with the STAR framework.
+Do NOT include technical, coding, or system-design questions.
+Use these topics for context where relevant: ${topics.join(", ")}.
 Respond with ONLY a valid JSON object: {"questions": [ ... ]} where each item is:
-{"question": "...", "category": "Behavioural | Technical | System design | Product sense | Leadership", "difficulty": "Easy | Medium | Hard", "meta": "~N min · M follow-ups"}`;
+{"question": "...", "category": "Behavioural", "difficulty": "Easy | Medium | Hard", "meta": "~N min · M follow-ups"}`;
 }
 
 export const CRITIQUE_PROMPT = `You are a strict reviewer of interview feedback.
-Given the question, the candidate's answer, and a draft STAR evaluation (JSON),
-correct any inaccurate scores or vague feedback and return an IMPROVED evaluation.
+You are given an interview question, the candidate's answer, and a draft STAR
+evaluation (JSON). Re-score each element against this rubric:
+- 0-3: element is missing or extremely vague
+- 4-6: element is present but lacks detail or specifics
+- 7-8: element is clear and specific
+- 9-10: element is specific, quantified, and compelling
+Fix any score that does not match the rubric, and rewrite vague feedback to name
+the specific gap or strength. Keep feedback concise and actionable.
 Respond with ONLY a valid JSON object in the SAME shape as the draft.`;

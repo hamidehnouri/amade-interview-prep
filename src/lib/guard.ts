@@ -15,3 +15,11 @@ export function ruleGuard(input: string): { safe: boolean; reason: string } {
   for (const p of BLOCKED) if (low.includes(p)) return { safe: false, reason: "Input blocked: possible prompt-injection attempt." };
   return { safe: true, reason: "" };
 }
+
+const UNSAFE_OUTPUT = ["kill yourself", "how to make a bomb", "self-harm instructions"];
+
+export function moderateOutput(text: string): { safe: boolean; reason: string } {
+  const low = text.toLowerCase();
+  for (const p of UNSAFE_OUTPUT) if (low.includes(p)) return { safe: false, reason: "Response withheld — flagged by output moderation." };
+  return { safe: true, reason: "" };
+}

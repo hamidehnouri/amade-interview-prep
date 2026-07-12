@@ -7,12 +7,15 @@ export type GenerationSettings = {
   temperature: number;
   maxTokens: number;
   reasoning: "minimal" | "low" | "medium" | "high";
-  stream: boolean;
   selfCritique: boolean;
+  customPrompt: string | null;
+  injectionGuard: boolean;
+  outputModeration: boolean;
 };
 export const DEFAULT_SETTINGS: GenerationSettings = {
   model: "openai/gpt-5-mini", technique: "chain_of_thought", temperature: 0.4,
-  maxTokens: 1024, reasoning: "medium", stream: true, selfCritique: true,
+  maxTokens: 1024, reasoning: "medium", selfCritique: false, customPrompt: null,
+  injectionGuard: true, outputModeration: true,
 };
 const KEY = "amade.settings";
 let state: GenerationSettings = DEFAULT_SETTINGS;
