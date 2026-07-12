@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, Lock, X, Pencil, Check } from "lucide-react";
 import Card from "@/components/ui/Card";
@@ -34,11 +34,20 @@ export default function SettingsPage() {
   const [pwErr, setPwErr] = useState("");
   const [saved, setSaved] = useState(false);
   const [editingPrompt, setEditingPrompt] = useState(false);
+  const [livePricing, setLivePricing] = useState<Record<string, { inp: number; out: number }>>({});
+
+  useEffect(() => {
+    fetch("/api/models")
+      .then((r) => r.json())
+      .then((d) => { if (d?.pricing) setLivePricing(d.pricing); })
+      .catch(() => {});
+  }, []);
 
   const dev = mode === "developer";
   const m = MODELS.find((x) => x.value === draft.model)!;
+  const priced = livePricing[draft.model] ?? { inp: m.inp, out: m.out };
   const isReasoning = m.reasoning;
-  const cost = ((1200 * m.inp + draft.maxTokens * m.out) / 1e6) * 8;
+  const cost = ((1200 * priced.inp + draft.maxTokens * priced.out) / 1e6) * 8;
   const reasoningIdx = Math.max(0, REASONING.indexOf(draft.reasoning));
 
   function chooseDeveloper() {
@@ -76,22 +85,18 @@ export default function SettingsPage() {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-[1fr_auto]">
           <Select label="Interview engine" value={draft.model} options={MODELS.map(({ value, label }) => ({ value, label }))} onChange={(v) => set({ model: v })} />
           <div className="min-w-[190px] rounded-[8px] bg-line-subtle p-3 font-mono text-[12px] text-secondary">
-            <div className="flex justify-between"><span>Input</span><span>${m.inp.toFixed(2)} / 1M</span></div>
-            <div className="mt-1 flex justify-between"><span>Output</span><span>${m.out.toFixed(2)} / 1M</span></div>
+            <div className="flex justify-between"><span>Input</span><span>${priced.inp.toFixed(2)} / 1M</span></div>
+            <div className="mt-1 flex justify-between"><span>Output</span><span>${priced.out.toFixed(2)} / 1M</span></div>
           </div>
         </div>
-        {dev && (
-          <>
-            <hr className="my-[18px] border-line" />
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="font-display text-[14px] font-semibold text-ink">Estimated cost per session</div>
-                <div className="text-[12px] text-muted">~8 questions · {draft.maxTokens.toLocaleString()} max output tokens each</div>
-              </div>
-              <div className="font-mono text-[24px] font-bold tracking-[-0.01em] text-ink">${cost.toFixed(2)}</div>
-            </div>
-          </>
-        )}
+        <hr className="my-[18px] border-line" />
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="font-display text-[14px] font-semibold text-ink">Estimated cost per session</div>
+            <div className="text-[12px] text-muted">~8 questions · {draft.maxTokens.toLocaleString()} max output tokens each</div>
+          </div>
+          <div className="font-mono text-[24px] font-bold tracking-[-0.01em] text-ink">${cost.toFixed(2)}</div>
+        </div>
       </Card>
 
       <Card rail={dev}>
@@ -99,13 +104,11 @@ export default function SettingsPage() {
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-x-8">
           <Slider label="Temperature" value={draft.temperature} min={0} max={1} step={0.1} format={(v) => v.toFixed(1)} disabled={isReasoning} onChange={(v) => set({ temperature: v })} hint={isReasoning ? "Ignored by reasoning models." : "Sampling randomness."} />
           <Slider label="Max output tokens" value={draft.maxTokens} min={256} max={4096} step={128} onChange={(v) => set({ maxTokens: v })} format={(v) => v.toLocaleString()} hint="Longer = more detailed feedback." />
+          <Slider label="Reasoning effort" value={reasoningIdx} min={0} max={3} step={1} disabled={!isReasoning} onChange={(i) => set({ reasoning: REASONING[i] })} format={(v) => cap(REASONING[v])} ticks={["Minimal", "Low", "Medium", "High"]} hint={isReasoning ? "Higher = slower & pricier." : "Not used by this model."} />
           {dev && (
-            <>
-              <Slider label="Reasoning effort" value={reasoningIdx} min={0} max={3} step={1} disabled={!isReasoning} onChange={(i) => set({ reasoning: REASONING[i] })} format={(v) => cap(REASONING[v])} ticks={["Minimal", "Low", "Medium", "High"]} hint={isReasoning ? "Higher = slower & pricier." : "Not used by this model."} />
-              <div className="flex flex-col justify-center">
-                <Toggle checked={draft.selfCritique} onChange={(v) => set({ selfCritique: v })} label="Self-critique pass" hint="Model reviews its own scoring before returning." />
-              </div>
-            </>
+            <div className="flex flex-col justify-center">
+              <Toggle checked={draft.selfCritique} onChange={(v) => set({ selfCritique: v })} label="Self-critique pass" hint="Model reviews its own scoring before returning." />
+            </div>
           )}
         </div>
       </Card>
