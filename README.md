@@ -47,7 +47,26 @@ npm run dev            # http://localhost:3000
 ```
 
 `OPENROUTER_API_KEY` is read **server‑side only** (in the API route handlers), so it
-never reaches the browser.
+never reaches the browser. Locally this `.env.local` key is used automatically; the
+**deployed demo ships without a key** and asks each visitor to bring their own (see below).
+
+## Bring your own key (BYOK)
+
+The public demo **does not ship an API key**. Anyone with the demo link could otherwise
+spend the owner's OpenRouter credits, so each visitor supplies **their own** key:
+
+- Open **Settings** and paste your OpenRouter key (get one at `openrouter.ai/keys`).
+- The key is held in **`sessionStorage`** — this browser tab only, cleared when the tab
+  closes — and is never written into the app's code or committed anywhere.
+- On each request the key is sent to the app's own route handlers in an
+  **`x-openrouter-key`** header over **HTTPS** — never in the URL or request body. The
+  server uses it for that single OpenRouter call and **never logs or persists it**.
+- During local development, `OPENROUTER_API_KEY` in `.env.local` is used as a fallback,
+  so you don't have to enter a key by hand.
+
+**Security note:** any client‑side storage (including `sessionStorage`) is readable by
+JavaScript and would therefore be exposed by an XSS vulnerability. For a BYOK demo — where
+the stored key is the visitor's own — this is an accepted, well‑understood tradeoff.
 
 ## How it works
 
@@ -105,7 +124,9 @@ auth) adds:
 
 1. Push the branch to GitHub.
 2. Import the repo on **vercel.com** (framework auto‑detected).
-3. Add the `OPENROUTER_API_KEY` environment variable.
+3. **Optional:** add an `OPENROUTER_API_KEY` environment variable. Omit it for a public
+   BYOK demo (visitors enter their own key in Settings); add it only if you want the
+   deployment to use your key.
 4. Deploy.
 
 Or from the project folder: `npx vercel` → add the env var → `npx vercel --prod`.
@@ -118,6 +139,6 @@ Or from the project folder: `npx vercel` → add the env var → `npx vercel --p
   non‑reasoning models. Reasoning effort is the relevant knob for GPT‑5.
 - Some OpenRouter models require enabling a data policy at
   `openrouter.ai/settings/privacy`.
-- Settings, the question bank of results, and wizard progress persist in `sessionStorage`
-  (cleared when the tab closes).
+- Settings, wizard progress, and the visitor's **API key** persist in `sessionStorage`
+  (cleared when the tab closes); the key is also sent only via an `x-openrouter-key` header.
 - The developer password is a client‑side demo gate, not authentication.

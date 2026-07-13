@@ -5,6 +5,8 @@ import { AnalyzeRequest } from "@/lib/schemas";
 import { isReasoningModel } from "@/lib/models";
 
 export async function POST(req: Request) {
+  const apiKey = req.headers.get("x-openrouter-key") || undefined;
+  if (!apiKey && !process.env.OPENROUTER_API_KEY) return NextResponse.json({ ok: false, error: "No API key set — add your OpenRouter API key in Settings." });
   const parsed = AnalyzeRequest.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ ok: false, error: parsed.error.issues[0]?.message ?? "Invalid request." });
   const { jobDescription, settings } = parsed.data;
@@ -19,6 +21,7 @@ export async function POST(req: Request) {
     temperature: settings.temperature,
     maxTokens: settings.maxTokens,
     reasoningEffort: isReasoningModel(settings.model) ? settings.reasoning : null,
+    apiKey,
   };
   try {
     const analysis = await analyzeJobDescription(jobDescription, g);

@@ -4,8 +4,8 @@ const API_BASE = "https://openrouter.ai/api/v1";
 
 // Fetches the gateway's model catalogue and returns per-1M-token pricing keyed by model id.
 // OpenRouter reports pricing.prompt / pricing.completion as USD per token (strings).
-export async function GET() {
-  const key = process.env.OPENROUTER_API_KEY;
+export async function GET(req: Request) {
+  const key = req.headers.get("x-openrouter-key") || process.env.OPENROUTER_API_KEY;
   try {
     const res = await fetch(`${API_BASE}/models`, {
       headers: key ? { Authorization: `Bearer ${key}` } : {},
