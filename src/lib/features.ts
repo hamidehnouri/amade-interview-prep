@@ -15,7 +15,7 @@ export async function analyzeJobDescription(jd: string, g: LlmOpts) {
   return r.data;
 }
 
-export async function generateQuestions(topics: string[], seniority: string, g: LlmOpts, n = 5) {
+export async function generateQuestions(topics: string[], seniority: string, g: LlmOpts, n = 8) {
   const parsed = toJson(await askLlm(generatePrompt(topics, seniority, n), "Generate the interview questions now.", g), "the questions");
   const r = QuestionsSchema.safeParse(Array.isArray(parsed) ? { questions: parsed } : parsed);
   if (!r.success) throw new Error("No valid questions were generated — try again.");
