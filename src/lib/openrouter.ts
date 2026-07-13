@@ -1,10 +1,10 @@
 const API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
-export type LlmOpts = { model: string; temperature?: number; maxTokens?: number; reasoningEffort?: string | null };
+export type LlmOpts = { model: string; temperature?: number; maxTokens?: number; reasoningEffort?: string | null; apiKey?: string };
 
 export async function askLlm(system: string, user: string, opts: LlmOpts): Promise<string> {
-  const key = process.env.OPENROUTER_API_KEY;
-  if (!key) throw new Error("Missing OPENROUTER_API_KEY (set it in .env.local).");
+  const key = opts.apiKey || process.env.OPENROUTER_API_KEY;
+  if (!key) throw new Error("No API key set — add your OpenRouter API key in Settings.");
 
   const body: Record<string, unknown> = {
     model: opts.model,

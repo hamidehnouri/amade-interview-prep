@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Lock, X, Pencil, Check } from "lucide-react";
+import { ArrowLeft, Lock, X, Pencil, Check, Eye, EyeOff, KeyRound } from "lucide-react";
 import Card from "@/components/ui/Card";
 import Eyebrow from "@/components/ui/Eyebrow";
 import Select from "@/components/ui/Select";
@@ -17,12 +17,14 @@ import { COACH_PROMPTS } from "@/lib/prompts";
 import { useSettings, DEFAULT_SETTINGS, type GenerationSettings } from "@/lib/settings";
 import { MODELS } from "@/lib/models";
 import { useDevUnlocked, tryUnlock } from "@/lib/devAccess";
+import { useApiKey } from "@/lib/apiKey";
 
 const REASONING = ["minimal", "low", "medium", "high"] as const;
 const cap = (s: string) => s[0].toUpperCase() + s.slice(1);
 
 export default function SettingsPage() {
   const { settings, update } = useSettings();
+  const { apiKey, setApiKey } = useApiKey();
   const unlocked = useDevUnlocked();
   const [mode, setMode] = useState<"user" | "developer">("user");
   const [draft, setDraft] = useState<GenerationSettings>(settings);
@@ -33,15 +35,16 @@ export default function SettingsPage() {
   const [pw, setPw] = useState("");
   const [pwErr, setPwErr] = useState("");
   const [saved, setSaved] = useState(false);
+  const [reveal, setReveal] = useState(false);
   const [editingPrompt, setEditingPrompt] = useState(false);
   const [livePricing, setLivePricing] = useState<Record<string, { inp: number; out: number }>>({});
 
   useEffect(() => {
-    fetch("/api/models")
+    fetch("/api/models", { headers: apiKey ? { "x-openrouter-key": apiKey } : {} })
       .then((r) => r.json())
       .then((d) => { if (d?.pricing) setLivePricing(d.pricing); })
       .catch(() => {});
-  }, []);
+  }, [apiKey]);
 
   const dev = mode === "developer";
   const m = MODELS.find((x) => x.value === draft.model)!;
@@ -79,6 +82,50 @@ export default function SettingsPage() {
           <button type="button" className={tabCls(dev)} onClick={chooseDeveloper}><Lock size={12} /> Developer</button>
         </div>
       </div>
+
+      <Card>
+        <Eyebrow>API key</Eyebrow>
+        <p className="text-[13px] text-secondary">
+          This demo uses your own OpenRouter API key. It is stored only in this browser tab
+          (cleared when you close it), sent securely over HTTPS, and never saved on the server.
+        </p>
+        <div className="mt-3 flex items-center gap-2">
+          <div className="relative flex-1">
+            <KeyRound size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+            <input
+              type={reveal ? "text" : "password"}
+              value={apiKey}
+              autoComplete="off"
+              spellCheck={false}
+              placeholder="sk-or-..."
+              onChange={(e) => setApiKey(e.target.value)}
+              className="w-full rounded-[8px] border border-line bg-white py-2 pl-9 pr-10 font-mono text-[13px] text-ink outline-none focus:border-accent"
+            />
+            <button
+              type="button"
+              onClick={() => setReveal((v) => !v)}
+              aria-label={reveal ? "Hide key" : "Show key"}
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted transition-colors hover:text-ink"
+            >
+              {reveal ? <EyeOff size={15} /> : <Eye size={15} />}
+            </button>
+          </div>
+          {apiKey && (
+            <Button variant="ghost" onClick={() => setApiKey("")}>Clear</Button>
+          )}
+        </div>
+        <p className={`mt-2 text-[12px] ${apiKey ? "text-green-600" : "text-amber-600"}`}>
+          {apiKey ? "Key set for this session." : "No key set — add one to run the interview coach."}
+        </p>
+        <a
+          href="https://openrouter.ai/keys"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-1 inline-block text-[12px] font-medium text-accent hover:underline"
+        >
+          Get an OpenRouter key →
+        </a>
+      </Card>
 
       <Card rail={dev}>
         <Eyebrow>Model</Eyebrow>
