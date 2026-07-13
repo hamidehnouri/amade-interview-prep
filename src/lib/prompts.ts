@@ -57,7 +57,7 @@ Respond with ONLY a valid JSON object, no extra text, in this shape:
   "seniority": "junior | mid | senior"
 }`;
 
-export function generatePrompt(topics: string[], seniority: string, n = 5) {
+export function generatePrompt(topics: string[], seniority: string, n = 8) {
   return `You are an experienced interviewer.
 Generate exactly ${n} BEHAVIOURAL interview questions for a ${seniority}-level candidate — questions about past experiences, teamwork, conflict, ownership, and decision-making that a candidate would answer with the STAR framework.
 Do NOT include technical, coding, or system-design questions.
