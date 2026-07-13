@@ -28,8 +28,9 @@ export default function SettingsPage() {
   const unlocked = useDevUnlocked();
   const [mode, setMode] = useState<"user" | "developer">("user");
   const [draft, setDraft] = useState<GenerationSettings>(settings);
+  const [keyDraft, setKeyDraft] = useState(apiKey);
   const set = (patch: Partial<GenerationSettings>) => setDraft((d) => ({ ...d, ...patch }));
-  const dirty = JSON.stringify(draft) !== JSON.stringify(settings);
+  const dirty = JSON.stringify(draft) !== JSON.stringify(settings) || keyDraft.trim() !== apiKey;
 
   const [pwOpen, setPwOpen] = useState(false);
   const [pw, setPw] = useState("");
@@ -61,7 +62,7 @@ export default function SettingsPage() {
     if (tryUnlock(pw)) { setPwOpen(false); setMode("developer"); }
     else setPwErr("Incorrect password.");
   }
-  function save() { update(draft); setSaved(true); setTimeout(() => setSaved(false), 2500); }
+  function save() { update(draft); setApiKey(keyDraft); setKeyDraft(keyDraft.trim()); setSaved(true); setTimeout(() => setSaved(false), 2500); }
 
   const tabCls = (active: boolean) =>
     `inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 transition-colors ${active ? "bg-white text-ink shadow-sm" : "text-secondary"}`;
@@ -94,11 +95,11 @@ export default function SettingsPage() {
             <KeyRound size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
             <input
               type={reveal ? "text" : "password"}
-              value={apiKey}
+              value={keyDraft}
               autoComplete="off"
               spellCheck={false}
               placeholder="sk-or-..."
-              onChange={(e) => setApiKey(e.target.value)}
+              onChange={(e) => setKeyDraft(e.target.value)}
               className="w-full rounded-[8px] border border-line bg-white py-2 pl-9 pr-10 font-mono text-[13px] text-ink outline-none focus:border-accent"
             />
             <button
@@ -110,12 +111,16 @@ export default function SettingsPage() {
               {reveal ? <EyeOff size={15} /> : <Eye size={15} />}
             </button>
           </div>
-          {apiKey && (
-            <Button variant="ghost" onClick={() => setApiKey("")}>Clear</Button>
+          {keyDraft && (
+            <Button variant="ghost" onClick={() => setKeyDraft("")}>Clear</Button>
           )}
         </div>
-        <p className={`mt-2 text-[12px] ${apiKey ? "text-green-600" : "text-amber-600"}`}>
-          {apiKey ? "Key set for this session." : "No key set — add one to run the interview coach."}
+        <p className={`mt-2 text-[12px] ${keyDraft.trim() !== apiKey ? "text-amber-600" : apiKey ? "text-green-600" : "text-amber-600"}`}>
+          {keyDraft.trim() !== apiKey
+            ? 'Unsaved — click "Save changes" to apply your key.'
+            : apiKey
+            ? "Key set for this session."
+            : "No key set — add one to run the interview coach."}
         </p>
         <a
           href="https://openrouter.ai/keys"
